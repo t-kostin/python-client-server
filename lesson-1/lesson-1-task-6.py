@@ -5,6 +5,11 @@
 
 from chardet import detect
 
+TEXT = 'сетевое программирование\nсокет\nдекоратор'
+
+with open('test_file.txt', 'w', encoding='koi8-r') as target:
+    target.write(TEXT)
+
 with open('test_file.txt', 'rb') as source:
     data = source.read()
 
