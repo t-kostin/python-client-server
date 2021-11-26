@@ -20,7 +20,6 @@ class Jim:
             message = json.loads(binary_data.decode('utf-8', errors='replace'))
             return message
         except json.JSONDecodeError:
-            print('Bad data')
             return {}
 
     @property
@@ -33,10 +32,10 @@ class JimClient(Jim):
     def __init__(self, address: str, port: int) -> None:
         self.address = address
         self.port = port
-        self.client_sock = socket(AF_INET, SOCK_STREAM)
 
     def send_presence(self, account_name: str, status: str) -> None:
-        self.client_sock.connect((self.address, self.port))
+        client_sock = socket(AF_INET, SOCK_STREAM)
+        client_sock.connect((self.address, self.port))
         message = {
             'action': 'presence',
             'time': self.current_timestamp,
@@ -46,19 +45,19 @@ class JimClient(Jim):
                 'status': status,
             },
         }
-        self.send_message(self.client_sock, message)
-        answer = self.receive_message(self.client_sock)
+        self.send_message(client_sock, message)
+        answer = self.receive_message(client_sock)
         self.process_response(answer)
-        self.client_sock.close()
+        client_sock.close()
 
     def process_response(self, answer: dict) -> None:
         handlers = {
-            '200': self.ok_handler,
-            '400': self.error_handler,
-            '402': self.error_handler,
+            200: self.ok_handler,
+            400: self.error_handler,
+            402: self.error_handler,
         }
         try:
-            handlers[str(answer['code'])](answer)
+            handlers[answer['code']](answer)
         except KeyError or ValueError:
             print('Invalid JSON format')
 
@@ -91,18 +90,17 @@ class JimServer(Jim):
         # для переиспользования сокета
         # self.server_sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.server_sock.listen(self.REQUEST_QUEUE)
-        self.client_sock = None
-        print(f'Server created and will be listen to port {port}.')
+        print('Server created and will be listen to port 7777')
 
     def listen(self) -> None:
         try:
             while True:
-                self.client_sock, address = self.server_sock.accept()
-                data = json.loads(self.client_sock.recv(BUFFER_SIZE).
+                client_sock, address = self.server_sock.accept()
+                data = json.loads(client_sock.recv(BUFFER_SIZE).
                                   decode('utf-8'))
                 response = self.process_request(data)
-                self.send_message(self.client_sock, response)
-                self.client_sock.close()
+                self.send_message(client_sock, response)
+                client_sock.close()
         finally:
             self.server_sock.close()
 
@@ -113,11 +111,11 @@ class JimServer(Jim):
         try:
             action = data['action']
         except KeyError:
-            return self.error_response(400, 'Invalid action')
+            return self.error_response(400, 'Invalid JSON format')
         try:
             return handlers[action](data)
         except KeyError:
-            return self.error_response(400, 'Invalid JSON format')
+            return self.error_response(400, 'Invalid action')
 
     def presence(self, data) -> dict:
         try:
@@ -132,7 +130,7 @@ class JimServer(Jim):
                 return self.error_response(400, 'Bad timestamp')
             print(f'User {account_name} is now have status {status}')
             return self.ok_response(200)
-        except KeyError or ValueError:
+        except (KeyError, TypeError):
             return self.error_response(400, 'Invalid JSON format')
 
     def error_response(self, code: int, message: str) -> dict:

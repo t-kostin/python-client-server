@@ -2,7 +2,7 @@ from re import fullmatch
 import sys
 
 
-class ArgumentsParser:
+class ArgumentsParser():
 
     DEFAULT_IP = ''
     DEFAULT_PORT = 7777
