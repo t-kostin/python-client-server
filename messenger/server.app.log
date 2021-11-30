@@ -1,0 +1,27 @@
+2021-11-30 18:17:56,332 DEBUG     server Application is started
+2021-11-30 18:17:56,333 INFO      messenger Server created and will be listen to port 7777
+2021-11-30 18:18:04,562 DEBUG     messenger JSON successfully decoded
+2021-11-30 18:18:04,562 DEBUG     messenger Message from client received
+2021-11-30 18:18:04,562 ERROR     messenger 402: Wrong account name
+2021-11-30 18:18:04,562 DEBUG     messenger Timestamp requested
+2021-11-30 18:18:04,562 DEBUG     messenger Message from client processed with code 402
+2021-11-30 18:18:04,562 DEBUG     messenger JSON successfully encoded
+2021-11-30 18:18:04,562 DEBUG     messenger Response to client sent
+2021-11-30 18:18:04,564 DEBUG     messenger Client sock closed
+2021-11-30 18:18:04,564 DEBUG     messenger JSON successfully decoded
+2021-11-30 18:18:04,564 DEBUG     messenger Message from client received
+2021-11-30 18:18:04,564 ERROR     messenger 400: No status provided
+2021-11-30 18:18:04,564 DEBUG     messenger Timestamp requested
+2021-11-30 18:18:04,564 DEBUG     messenger Message from client processed with code 400
+2021-11-30 18:18:04,564 DEBUG     messenger JSON successfully encoded
+2021-11-30 18:18:04,564 DEBUG     messenger Response to client sent
+2021-11-30 18:18:04,564 DEBUG     messenger Client sock closed
+2021-11-30 18:18:04,565 DEBUG     messenger JSON successfully decoded
+2021-11-30 18:18:04,565 DEBUG     messenger Message from client received
+2021-11-30 18:18:04,565 DEBUG     messenger Timestamp requested
+2021-11-30 18:18:04,565 INFO      messenger 200: User guest is now have status Busy!
+2021-11-30 18:18:04,565 DEBUG     messenger Timestamp requested
+2021-11-30 18:18:04,565 DEBUG     messenger Message from client processed with code 200
+2021-11-30 18:18:04,565 DEBUG     messenger JSON successfully encoded
+2021-11-30 18:18:04,565 DEBUG     messenger Response to client sent
+2021-11-30 18:18:04,565 DEBUG     messenger Client sock closed
