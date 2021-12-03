@@ -1,0 +1,37 @@
+2021-12-03 19:17:38,433 DEBUG     server Application is started
+2021-12-03 19:17:38,433 INFO      messenger Server created and will be listen to port 7777
+2021-12-03 19:17:38,434 DEBUG     decorators Function <listen> called from function <main> (line 11) with arguments ()
+2021-12-03 19:17:42,624 DEBUG     messenger JSON successfully decoded
+2021-12-03 19:17:42,624 DEBUG     messenger Message from client received
+2021-12-03 19:17:42,624 DEBUG     decorators Function <process_request> called from function <listen> (line 135) with arguments ({'action': 'presence', 'time': 1638548262.624462, 'type': 'status', 'user': {'account_name': 'user', 'status': 'Online'}},)
+2021-12-03 19:17:42,625 DEBUG     decorators Function <presence> called from function <process_request> (line 156) with arguments ({'action': 'presence', 'time': 1638548262.624462, 'type': 'status', 'user': {'account_name': 'user', 'status': 'Online'}},)
+2021-12-03 19:17:42,625 ERROR     messenger 402: Wrong account name
+2021-12-03 19:17:42,625 DEBUG     decorators Function <error_response> called from function <presence> (line 167) with arguments (402, 'Wrong account name')
+2021-12-03 19:17:42,625 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,625 DEBUG     messenger Message from client processed with code 402
+2021-12-03 19:17:42,625 DEBUG     messenger JSON successfully encoded
+2021-12-03 19:17:42,625 DEBUG     messenger Response to client sent
+2021-12-03 19:17:42,625 DEBUG     messenger Client sock closed
+2021-12-03 19:17:42,627 DEBUG     messenger JSON successfully decoded
+2021-12-03 19:17:42,627 DEBUG     messenger Message from client received
+2021-12-03 19:17:42,627 DEBUG     decorators Function <process_request> called from function <listen> (line 135) with arguments ({'action': 'presence', 'time': 1638548262.6262944, 'type': 'status', 'user': {'account_name': 'guest', 'status': ''}},)
+2021-12-03 19:17:42,627 DEBUG     decorators Function <presence> called from function <process_request> (line 156) with arguments ({'action': 'presence', 'time': 1638548262.6262944, 'type': 'status', 'user': {'account_name': 'guest', 'status': ''}},)
+2021-12-03 19:17:42,627 ERROR     messenger 400: No status provided
+2021-12-03 19:17:42,627 DEBUG     decorators Function <error_response> called from function <presence> (line 171) with arguments (400, 'No status provided')
+2021-12-03 19:17:42,627 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,627 DEBUG     messenger Message from client processed with code 400
+2021-12-03 19:17:42,627 DEBUG     messenger JSON successfully encoded
+2021-12-03 19:17:42,627 DEBUG     messenger Response to client sent
+2021-12-03 19:17:42,627 DEBUG     messenger Client sock closed
+2021-12-03 19:17:42,628 DEBUG     messenger JSON successfully decoded
+2021-12-03 19:17:42,628 DEBUG     messenger Message from client received
+2021-12-03 19:17:42,628 DEBUG     decorators Function <process_request> called from function <listen> (line 135) with arguments ({'action': 'presence', 'time': 1638548262.62829, 'type': 'status', 'user': {'account_name': 'guest', 'status': 'Busy!'}},)
+2021-12-03 19:17:42,628 DEBUG     decorators Function <presence> called from function <process_request> (line 156) with arguments ({'action': 'presence', 'time': 1638548262.62829, 'type': 'status', 'user': {'account_name': 'guest', 'status': 'Busy!'}},)
+2021-12-03 19:17:42,628 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,628 INFO      messenger 200: User guest is now have status Busy!
+2021-12-03 19:17:42,629 DEBUG     decorators Function <ok_response> called from function <presence> (line 178) with arguments (200,)
+2021-12-03 19:17:42,629 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,629 DEBUG     messenger Message from client processed with code 200
+2021-12-03 19:17:42,629 DEBUG     messenger JSON successfully encoded
+2021-12-03 19:17:42,629 DEBUG     messenger Response to client sent
+2021-12-03 19:17:42,629 DEBUG     messenger Client sock closed
