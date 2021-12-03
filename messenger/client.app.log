@@ -1,27 +1,34 @@
-2021-11-30 18:17:24,789 DEBUG     client Application Started
-2021-11-30 18:17:26,834 CRITICAL  messenger Server localhost:7777 refusing to connect
-2021-11-30 18:18:04,559 DEBUG     client Application Started
-2021-11-30 18:18:04,562 DEBUG     messenger Connected to server localhost:7777
-2021-11-30 18:18:04,562 DEBUG     messenger Timestamp requested
-2021-11-30 18:18:04,562 DEBUG     messenger JSON successfully encoded
-2021-11-30 18:18:04,562 DEBUG     messenger Presence message sent
-2021-11-30 18:18:04,562 DEBUG     messenger JSON successfully decoded
-2021-11-30 18:18:04,562 DEBUG     messenger Answer received
-2021-11-30 18:18:04,564 ERROR     messenger Error (402): Wrong account name
-2021-11-30 18:18:04,564 DEBUG     messenger Answer processed
-2021-11-30 18:18:04,564 DEBUG     messenger Connected to server localhost:7777
-2021-11-30 18:18:04,564 DEBUG     messenger Timestamp requested
-2021-11-30 18:18:04,564 DEBUG     messenger JSON successfully encoded
-2021-11-30 18:18:04,564 DEBUG     messenger Presence message sent
-2021-11-30 18:18:04,564 DEBUG     messenger JSON successfully decoded
-2021-11-30 18:18:04,565 DEBUG     messenger Answer received
-2021-11-30 18:18:04,565 ERROR     messenger Error (400): No status provided
-2021-11-30 18:18:04,565 DEBUG     messenger Answer processed
-2021-11-30 18:18:04,565 DEBUG     messenger Connected to server localhost:7777
-2021-11-30 18:18:04,565 DEBUG     messenger Timestamp requested
-2021-11-30 18:18:04,565 DEBUG     messenger JSON successfully encoded
-2021-11-30 18:18:04,565 DEBUG     messenger Presence message sent
-2021-11-30 18:18:04,565 DEBUG     messenger JSON successfully decoded
-2021-11-30 18:18:04,565 DEBUG     messenger Answer received
-2021-11-30 18:18:04,565 INFO      messenger Ok (200): no additional message provided
-2021-11-30 18:18:04,566 DEBUG     messenger Answer processed
+2021-12-03 19:17:42,621 DEBUG     client Application Started
+2021-12-03 19:17:42,621 DEBUG     decorators Function <send_presence> called from function <main> (line 37) with arguments ('user', 'Online')
+2021-12-03 19:17:42,624 DEBUG     messenger Connected to server localhost:7777
+2021-12-03 19:17:42,624 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,624 DEBUG     messenger JSON successfully encoded
+2021-12-03 19:17:42,624 DEBUG     messenger Presence message sent
+2021-12-03 19:17:42,625 DEBUG     messenger JSON successfully decoded
+2021-12-03 19:17:42,625 DEBUG     messenger Answer received
+2021-12-03 19:17:42,626 DEBUG     decorators Function <process_response> called from function <send_presence> (line 82) with arguments ({'code': 402, 'time': 1638548262.625494, 'error': 'Wrong account name'},)
+2021-12-03 19:17:42,626 DEBUG     decorators Function <error_handler> called from function <process_response> (line 94) with arguments ({'code': 402, 'time': 1638548262.625494, 'error': 'Wrong account name'},)
+2021-12-03 19:17:42,626 ERROR     messenger Error (402): Wrong account name
+2021-12-03 19:17:42,626 DEBUG     messenger Answer processed
+2021-12-03 19:17:42,626 DEBUG     decorators Function <send_presence> called from function <main> (line 40) with arguments ('guest', '')
+2021-12-03 19:17:42,626 DEBUG     messenger Connected to server localhost:7777
+2021-12-03 19:17:42,626 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,626 DEBUG     messenger JSON successfully encoded
+2021-12-03 19:17:42,626 DEBUG     messenger Presence message sent
+2021-12-03 19:17:42,627 DEBUG     messenger JSON successfully decoded
+2021-12-03 19:17:42,627 DEBUG     messenger Answer received
+2021-12-03 19:17:42,627 DEBUG     decorators Function <process_response> called from function <send_presence> (line 82) with arguments ({'code': 400, 'time': 1638548262.6272926, 'error': 'No status provided'},)
+2021-12-03 19:17:42,627 DEBUG     decorators Function <error_handler> called from function <process_response> (line 94) with arguments ({'code': 400, 'time': 1638548262.6272926, 'error': 'No status provided'},)
+2021-12-03 19:17:42,628 ERROR     messenger Error (400): No status provided
+2021-12-03 19:17:42,628 DEBUG     messenger Answer processed
+2021-12-03 19:17:42,628 DEBUG     decorators Function <send_presence> called from function <main> (line 43) with arguments ('guest', 'Busy!')
+2021-12-03 19:17:42,628 DEBUG     messenger Connected to server localhost:7777
+2021-12-03 19:17:42,628 DEBUG     messenger Timestamp requested
+2021-12-03 19:17:42,628 DEBUG     messenger JSON successfully encoded
+2021-12-03 19:17:42,628 DEBUG     messenger Presence message sent
+2021-12-03 19:17:42,629 DEBUG     messenger JSON successfully decoded
+2021-12-03 19:17:42,629 DEBUG     messenger Answer received
+2021-12-03 19:17:42,629 DEBUG     decorators Function <process_response> called from function <send_presence> (line 82) with arguments ({'code': 200, 'time': 1638548262.629316, 'alert': ''},)
+2021-12-03 19:17:42,629 DEBUG     decorators Function <ok_handler> called from function <process_response> (line 94) with arguments ({'code': 200, 'time': 1638548262.629316, 'alert': ''},)
+2021-12-03 19:17:42,629 INFO      messenger Ok (200): no additional message provided
+2021-12-03 19:17:42,629 DEBUG     messenger Answer processed

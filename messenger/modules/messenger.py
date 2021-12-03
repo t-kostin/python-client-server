@@ -2,12 +2,30 @@ import sys
 from socket import socket, AF_INET, SOCK_STREAM
 import time
 import json
-import logging
 from .constants import *
+from .decorators import log
+
+
+class EmptyLogger:
+
+    def critical(self, arg: str):
+        pass
+
+    def error(self, arg: str):
+        pass
+
+    def warning(self, arg: str):
+        pass
+
+    def info(self, arg: str):
+        pass
+
+    def debug(self, arg: str):
+        pass
 
 
 class Jim:
-    def __init__(self, logger: logging.Logger):
+    def __init__(self, logger):
         self._logger = logger
 
     def send_message(self, sock, data):
@@ -33,11 +51,12 @@ class Jim:
 
 class JimClient(Jim):
 
-    def __init__(self, address: str, port: int, logger: logging.Logger) -> None:
+    def __init__(self, address: str, port: int, logger=EmptyLogger()) -> None:
         super().__init__(logger)
         self.address = address
         self.port = port
 
+    @log
     def send_presence(self, account_name: str, status: str) -> None:
         client_sock = socket(AF_INET, SOCK_STREAM)
         try:
@@ -64,6 +83,7 @@ class JimClient(Jim):
         self._logger.debug('Answer processed')
         client_sock.close()
 
+    @log
     def process_response(self, data: dict) -> None:
         handlers = {
             OK200: self.ok_handler,
@@ -72,37 +92,40 @@ class JimClient(Jim):
         }
         try:
             handlers[data['code']](data)
-        except KeyError or ValueError:
+        except (KeyError, ValueError):
             self._logger.critical(INVALID_JSON)
 
+    @log
     def ok_handler(self, data: dict) -> None:
         try:
             code = data['code']
             alert = 'no additional message provided' \
                 if len(data['alert']) == 0 else 'message: ' + data['alert']
             self._logger.info(f'Ok ({code}): {alert}')
-        except KeyError or ValueError:
+        except (KeyError, ValueError):
             self._logger.critical(INVALID_JSON)
 
+    @log
     def error_handler(self, data: dict) -> None:
         try:
             code = data['code']
             error = data['error']
             self._logger.error(f'Error ({code}): {error}')
-        except KeyError or ValueError:
+        except (KeyError, ValueError):
             self._logger.critical(INVALID_JSON)
 
 
 class JimServer(Jim):
     REQUEST_QUEUE = 5
 
-    def __init__(self, address: str, port: int, logger: logging.Logger) -> None:
+    def __init__(self, address: str, port: int, logger=EmptyLogger()) -> None:
         super().__init__(logger)
         self.server_sock = socket(AF_INET, SOCK_STREAM)
         self.server_sock.bind((address, port))
         self.server_sock.listen(self.REQUEST_QUEUE)
         self._logger.info(f'Server created and will be listen to port {port}')
 
+    @log
     def listen(self) -> None:
         try:
             while True:
@@ -119,6 +142,7 @@ class JimServer(Jim):
         finally:
             self.server_sock.close()
 
+    @log
     def process_request(self, data) -> dict:
         handlers = {
             PRESENCE: self.presence,
@@ -134,6 +158,7 @@ class JimServer(Jim):
             self._logger.error(f'{ERR400}: {INVALID_JSON}')
             return self.error_response(ERR400, INVALID_ACTION)
 
+    @log
     def presence(self, data) -> dict:
         try:
             account_name = data['user']['account_name']
@@ -155,6 +180,7 @@ class JimServer(Jim):
             self._logger.error(f'{ERR400}: {INVALID_JSON}')
             return self.error_response(ERR400, INVALID_JSON)
 
+    @log
     def error_response(self, code: int, message: str) -> dict:
         response_data = {
             'code': code,
@@ -163,6 +189,7 @@ class JimServer(Jim):
         }
         return response_data
 
+    @log
     def ok_response(self, code: int, message='') -> dict:
         response_data = {
             'code': code,
