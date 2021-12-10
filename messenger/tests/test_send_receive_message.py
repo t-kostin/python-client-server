@@ -28,33 +28,33 @@ class TestSendReceiveMessage(unittest.TestCase):
     def test_send_receive(self):
         message = {
             'action': 'presence',
-            'time': self.server.current_timestamp,
+            'time': self.server.timestamp,
             'type': 'status',
             'user': {
                 'account_name': 'guest',
                 'status': 'I am busy!',
             },
         }
-        self.server.send_message(self.socket, message)
-        self.assertEqual(self.server.receive_message(self.socket), message)
+        self.server.send(self.socket, message)
+        self.assertEqual(self.server.receive(self.socket), message)
 
     def test_very_long_message(self):
         message = {
             'action': 'presence',
-            'time': self.server.current_timestamp,
+            'time': self.server.timestamp,
             'type': 'status',
             'user': {
                 'account_name': 'usr' * BUFFER_SIZE,
                 'status': 'I am busy!',
             },
         }
-        self.server.send_message(self.socket, message)
-        self.assertEqual(self.server.receive_message(self.socket), {})
+        self.server.send(self.socket, message)
+        self.assertEqual(self.server.receive(self.socket), {})
 
     def test_tuple(self):
         message = (1, 2, 3)
-        self.server.send_message(self.socket, message)
-        self.assertNotEqual(self.server.receive_message(self.socket), message)
+        self.server.send(self.socket, message)
+        self.assertNotEqual(self.server.receive(self.socket), message)
 
 
 if __name__ == '__main__':

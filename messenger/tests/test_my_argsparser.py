@@ -1,4 +1,4 @@
-from ..modules.my_argparse import ArgumentsParser
+from ..modules.arg_types import ArgumentsParser
 import unittest
 
 

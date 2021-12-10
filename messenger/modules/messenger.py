@@ -2,6 +2,7 @@ import sys
 from socket import socket, AF_INET, SOCK_STREAM
 import time
 import json
+from select import select
 from .constants import *
 from .decorators import log
 
@@ -28,24 +29,49 @@ class Jim:
     def __init__(self, logger):
         self._logger = logger
 
-    def send_message(self, sock, data):
+    @log
+    def send(self, sock, data):
         binary_data = json.dumps(data).encode('utf-8')
-        self._logger.debug('JSON successfully encoded')
         sock.send(binary_data)
 
-    def receive_message(self, sock) -> dict:
+    @log
+    def send_data(self, responses: dict, clients_all: list):
+        for client, data in responses.items():
+            try:
+                self.send(client, data)
+            except OSError:
+                clients_all.remove(client)
+                client.close()
+
+    @log
+    def receive(self, sock):
         try:
             binary_data = sock.recv(BUFFER_SIZE)
+            if binary_data == b'':
+                return None
             message = json.loads(binary_data.decode('utf-8', errors='replace'))
-            self._logger.debug('JSON successfully decoded')
             return message
         except json.JSONDecodeError:
             self._logger.error('JSON decode error')
             return {}
 
+    @log
+    def receive_data(self, clients_to_read: list, clients_all: list) -> dict:
+        data = {}
+        for client in clients_to_read:
+            try:
+                client_data = self.receive(client)
+                if client_data is None:
+                    raise OSError
+            except OSError:
+                client.close()
+                clients_all.remove(client)
+            else:
+                data[client] = client_data
+        return data
+
     @property
-    def current_timestamp(self) -> float:
-        self._logger.debug('Timestamp requested')
+    def timestamp(self) -> float:
         return time.time()
 
 
@@ -55,33 +81,55 @@ class JimClient(Jim):
         super().__init__(logger)
         self.address = address
         self.port = port
+        self.client_sock = socket(AF_INET, SOCK_STREAM)
 
-    @log
-    def send_presence(self, account_name: str, status: str) -> None:
-        client_sock = socket(AF_INET, SOCK_STREAM)
+    def connect(self):
         try:
-            client_sock.connect((self.address, self.port))
+            self.client_sock.connect((self.address, self.port))
             self._logger.debug(f'Connected to server {self.address}:{self.port}')
         except ConnectionRefusedError:
             self._logger.critical(f'Server {self.address}:{self.port}'
                                   f' refusing to connect')
             sys.exit()
+
+    def listen(self):
+        try:
+            answer = self.receive(self.client_sock)
+            if answer is None:
+                raise ConnectionAbortedError
+        except (ConnectionError, ConnectionResetError, ConnectionAbortedError):
+            print('Connection to server is lost')
+            sys.exit(1)
+        except OSError:
+            pass
+        else:
+            return self.process_response(answer)
+
+    def disconnect(self):
+        self.client_sock.close()
+
+    @log
+    def send_presence(self, account_name: str, status: str) -> None:
         message = {
-            'action': PRESENCE,
-            'time': self.current_timestamp,
-            'type': 'status',
-            'user': {
-                'account_name': account_name,
-                'status': status,
+            ACTION: SEND_PRESENCE,
+            TIME: self.timestamp,
+            TYPE: STATUS,
+            USER: {
+                USER_NAME: account_name,
+                STATUS: status,
             },
         }
-        self.send_message(client_sock, message)
-        self._logger.debug('Presence message sent')
-        answer = self.receive_message(client_sock)
-        self._logger.debug('Answer received')
-        self.process_response(answer)
-        self._logger.debug('Answer processed')
-        client_sock.close()
+        self.send(self.client_sock, message)
+        return self.listen()
+
+    def send_to_all(self, account_name: str, text: str):
+        message = {
+            ACTION: SEND_TO_ALL,
+            TIME: self.timestamp,
+            USER_NAME: account_name,
+            MESSAGE: text,
+        }
+        self.send(self.client_sock, message)
 
     @log
     def process_response(self, data: dict) -> None:
@@ -89,11 +137,17 @@ class JimClient(Jim):
             OK200: self.ok_handler,
             ERR400: self.error_handler,
             ERR402: self.error_handler,
+            SEND_TO_ALL: self.to_all_handler,
         }
         try:
-            handlers[data['code']](data)
+            return handlers[data[CODE]](data)
         except (KeyError, ValueError):
-            self._logger.critical(INVALID_JSON)
+            try:
+                return handlers[data[ACTION]](data)
+            except (KeyError, ValueError):
+                self._logger.critical(INVALID_JSON)
+                self.client_sock.close()
+                sys.exit(1)
 
     @log
     def ok_handler(self, data: dict) -> None:
@@ -102,8 +156,11 @@ class JimClient(Jim):
             alert = 'no additional message provided' \
                 if len(data['alert']) == 0 else 'message: ' + data['alert']
             self._logger.info(f'Ok ({code}): {alert}')
+            return code
         except (KeyError, ValueError):
             self._logger.critical(INVALID_JSON)
+            self.client_sock.close()
+            sys.exit(1)
 
     @log
     def error_handler(self, data: dict) -> None:
@@ -111,89 +168,132 @@ class JimClient(Jim):
             code = data['code']
             error = data['error']
             self._logger.error(f'Error ({code}): {error}')
+            return code
         except (KeyError, ValueError):
             self._logger.critical(INVALID_JSON)
+            self.client_sock.close()
+            sys.exit(1)
+
+    @log
+    def to_all_handler(self, data: dict):
+        try:
+            print(f'{data[USER_NAME]}: {data[MESSAGE]}')
+        except KeyError:
+            self._logger.critical(INVALID_JSON)
+            self.client_sock.close()
+            sys.exit(1)
 
 
 class JimServer(Jim):
     REQUEST_QUEUE = 5
+    TIMEOUT = 1
+    SELECT_WAIT = 0
 
     def __init__(self, address: str, port: int, logger=EmptyLogger()) -> None:
         super().__init__(logger)
+        self.clients = []
         self.server_sock = socket(AF_INET, SOCK_STREAM)
         self.server_sock.bind((address, port))
         self.server_sock.listen(self.REQUEST_QUEUE)
+        self.server_sock.settimeout(self.TIMEOUT)
         self._logger.info(f'Server created and will be listen to port {port}')
 
     @log
     def listen(self) -> None:
         try:
             while True:
-                client_sock, address = self.server_sock.accept()
-                data = self.receive_message(client_sock)
-                self._logger.debug('Message from client received')
-                response = self.process_request(data)
-                self._logger.debug('Message from client processed with '
-                                   'code %(code)d', response)
-                self.send_message(client_sock, response)
-                self._logger.debug('Response to client sent')
-                client_sock.close()
-                self._logger.debug('Client sock closed')
+                try:
+                    client_sock, address = self.server_sock.accept()
+                except OSError:
+                    pass
+                else:
+                    self.clients.append(client_sock)
+                finally:
+                    if self.clients:
+                        self.process_clients()
         finally:
             self.server_sock.close()
 
+    def process_clients(self):
+        clients_read = []
+        clients_write = []
+        try:
+            clients_read, clients_write, errors = select(
+                self.clients,
+                self.clients,
+                [],
+                self.SELECT_WAIT,
+            )
+        except OSError:
+            pass
+        if clients_read:
+            requests = self.receive_data(clients_read, self.clients)
+            responses = self.process_requests(requests, clients_write)
+            self.send_data(responses, self.clients)
+
+    def process_requests(self, requests, clients_write):
+        responses = {}
+        for client, data in requests.items():
+            responses.update(self.process_request(client, data, clients_write))
+        return responses
+
     @log
-    def process_request(self, data) -> dict:
+    def process_request(self, client, data, clients_write) -> dict:
         handlers = {
-            PRESENCE: self.presence,
+            SEND_PRESENCE: self.presence,
+            SEND_TO_ALL: self.to_all,
         }
         try:
             action = data['action']
         except KeyError:
-            self._logger.error(f'{ERR400}: {INVALID_JSON}')
-            return self.error_response(ERR400, INVALID_JSON)
+            return self.error_response(client, ERR400, INVALID_JSON)
         try:
-            return handlers[action](data)
+            return handlers[action](client, data, clients_write)
         except KeyError:
-            self._logger.error(f'{ERR400}: {INVALID_JSON}')
-            return self.error_response(ERR400, INVALID_ACTION)
+            return self.error_response(client, ERR400, INVALID_ACTION)
 
     @log
-    def presence(self, data) -> dict:
-        try:
-            account_name = data['user']['account_name']
-            if account_name != 'guest':
-                self._logger.error(f'{ERR402}: {WRONG_USER}')
-                return self.error_response(ERR402, WRONG_USER)
-            status = data['user']['status']
-            if len(status) == 0:
-                self._logger.error(f'{ERR400}: {NO_STATUS}')
-                return self.error_response(ERR400, NO_STATUS)
-            timestamp = data['time']
-            if timestamp > self.current_timestamp:
-                self._logger.error(f'{ERR400}: {BAD_TIMESTAMP}')
-                return self.error_response(ERR400, BAD_TIMESTAMP)
-            self._logger.info(f'200: User {account_name} is now have'
-                              f' status {status}')
-            return self.ok_response(OK200)
-        except (KeyError, TypeError):
-            self._logger.error(f'{ERR400}: {INVALID_JSON}')
-            return self.error_response(ERR400, INVALID_JSON)
+    def presence(self, client, data, clients_write) -> dict:
+        if client in clients_write:
+            try:
+                account_name = data[USER][USER_NAME]
+                if account_name != 'guest':
+                    return self.error_response(client, ERR402, WRONG_USER)
+                status = data[USER][STATUS]
+                if len(status) == 0:
+                    return self.error_response(client, ERR400, NO_STATUS)
+                timestamp = data[TIME]
+                if timestamp > self.timestamp:
+                    return self.error_response(client, ERR400, BAD_TIMESTAMP)
+                return self.ok_response(client, OK200)
+            except (KeyError, TypeError):
+                return self.error_response(client, ERR400, INVALID_JSON)
+
+    def to_all(self, client, data, clients_write) -> dict:
+        response = {}
+        for current_client in clients_write:
+            if current_client != client:
+                response[current_client] = data
+        return response
 
     @log
-    def error_response(self, code: int, message: str) -> dict:
+    def error_response(self, client, code: int, message: str) -> dict:
         response_data = {
-            'code': code,
-            'time': self.current_timestamp,
-            'error': message,
+            client: {
+                CODE: code,
+                TIME: self.timestamp,
+                ERROR: message,
+            }
         }
         return response_data
 
     @log
-    def ok_response(self, code: int, message='') -> dict:
+    def ok_response(self, client, code: int, message='') -> dict:
         response_data = {
-            'code': code,
-            'time': self.current_timestamp,
-            'alert': message,
+            client: {
+                CODE: code,
+                TIME: self.timestamp,
+                ALERT: message,
+            }
         }
         return response_data

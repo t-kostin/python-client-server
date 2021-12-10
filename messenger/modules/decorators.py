@@ -17,5 +17,13 @@ def log(func):
             self._logger.debug(f'Function <{func.__name__}> called '
                                f'with arguments {args}')
         result = func(self, *args, **kwargs)
+        if func.__name__ == 'error_response':
+            err_code = args[1]
+            err_message = args[2]
+            self._logger.error(f'{err_code}: {err_message}')
+        elif func.__name__ == 'ok_response':
+            answer_code = args[1]
+            message = args[2] if len(args) == 3 else ''
+            self._logger.info(f'{answer_code}: {message}')
         return result
     return wrapper
