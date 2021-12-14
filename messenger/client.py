@@ -1,5 +1,7 @@
-import argparse
 import sys
+import argparse
+import time
+import threading
 
 from modules.arg_types import ip_address, port
 from modules.messenger import JimClient
@@ -7,9 +9,35 @@ from loggers.client_log_config import CLIENT_LOG
 from modules.constants import *
 
 
+def sending(client):
+    while True:
+        recipient = input('Recipient/"-all" send to all/"-exit" disconnect and quit: ')
+        if recipient == '-exit':
+            break
+        elif recipient == '':
+            print('Recipient should not be empty.')
+        text = input('Message: ')
+        if text == '':
+            print('Message should not be empty.')
+        if recipient == '-all':
+            client.send_to_all(text)
+        else:
+            client.send_message(recipient, text)
+
+
+def listening(client):
+    while True:
+        client.listen()
+
+
 def main():
     CLIENT_LOG.debug('Application Started')
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'user',
+        type=str,
+        help='User name. For testing valid names are user-1, user-2, user-3 and user-4',
+    )
     parser.add_argument(
         'ip_addr',
         type=ip_address,
@@ -24,28 +52,46 @@ def main():
         default=7777,
         help='server port: integer from 1024 to 65535',
     )
-    parser.add_argument(
-        '--mode',
-        type=str,
-        choices=('send', 'listen'),
-        default='send',
-        help='Mode of the client: send or listen',
-    )
     args = parser.parse_args()
 
     my_client = JimClient(args.ip_addr, args.port, CLIENT_LOG)
     my_client.connect()
-    my_client.send_presence('guest', 'Online')
-    print(f'Client now {args.mode}')
-    while True:
-        if args.mode == 'send':
-            text_to_send = input('Input text to send, to exit press enter without input: ')
-            if text_to_send == '':
-                break
-            my_client.send_to_all('guest', text_to_send)
+    if my_client.send_presence(args.user, 'Online') != OK200:
+        print(f'User {args.user} could not connect to the server')
+        sys.exit()
 
-        if args.mode == 'listen':
-            my_client.listen()
+    listening_thread = threading.Thread(
+        target=listening,
+        args=(my_client,),
+        daemon=True,
+    )
+    sending_thread = threading.Thread(
+        target=sending,
+        args=(my_client,),
+        daemon=True
+    )
+    listening_thread.start()
+    sending_thread.start()
+
+    # while True:
+    #     recipient = input('Recipient/"-all" send to all/"-exit" disconnect and quit: ')
+    #     if recipient == '-exit':
+    #         break
+    #     elif recipient == '':
+    #         print('Recipient should not be empty.')
+    #     text = input('Message: ')
+    #     if text == '':
+    #         print('Message should not be empty.')
+    #     if recipient == '-all':
+    #         my_client.send_to_all(args.user, text)
+    #     else:
+    #         my_client.send_message(args.user, recipient, text)
+
+    # if args.mode == 'listen':
+    while True:
+        time.sleep(1)
+        if not (listening_thread.is_alive() and sending_thread.is_alive()):
+            break
 
     my_client.disconnect()
 

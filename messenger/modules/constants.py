@@ -3,6 +3,7 @@ BUFFER_SIZE = 4096
 OK200 = 200
 ERR400 = 400
 ERR402 = 402
+ERR404 = 404
 
 INVALID_JSON = 'Invalid JSON format'
 BAD_TIMESTAMP = 'Bad timestamp'
@@ -13,7 +14,10 @@ WRONG_USER = 'Wrong account name'
 SEND_PRESENCE = 'presence'
 SEND_MESSAGE = 'message'
 SEND_TO_ALL = 'to_all'
+CLOSE_SESSION = 'exit'
+
 ACTION = 'action'
+DESTINATION = 'destination'
 TYPE = 'type'
 USER = 'user'
 USER_NAME = 'account_name'
@@ -23,3 +27,5 @@ TIME = 'time'
 ERROR = 'error'
 ALERT = 'alert'
 MESSAGE = 'message_text'
+
+USER_LIST = ['user-1', 'user-2', 'user-3', 'user-4']
