@@ -1,6 +1,5 @@
 from subprocess import Popen, CREATE_NEW_CONSOLE
-
-CLIENTS = 5
+from modules.constants import USER_LIST
 
 
 def main():
@@ -8,12 +7,13 @@ def main():
 
     clients = []
     while True:
-        answer = input(f'Start {CLIENTS} clients (s), Close clients (c), Close clients & exit (x): ')
+        answer = input(f'Start {len(USER_LIST)} clients (s), Close clients (c),'
+                       f' Close clients & exit (x): ')
 
         if answer == 's' and clients == []:
-            for i in range(CLIENTS):
-                mode = 'send' if i % 2 else 'listen'
-                client = Popen(f'python client.py --mode {mode}', creationflags=CREATE_NEW_CONSOLE)
+            for user in USER_LIST:
+                client = Popen(f'python client.py {user}',
+                               creationflags=CREATE_NEW_CONSOLE)
                 clients.append(client)
         elif answer == 'c' or answer == 'x':
             for client in clients:

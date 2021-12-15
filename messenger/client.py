@@ -11,14 +11,17 @@ from modules.constants import *
 
 def sending(client):
     while True:
-        recipient = input('Recipient/"-all" send to all/"-exit" disconnect and quit: ')
+        recipient = input('Input recipient or\n-all send to all or\n'
+                          '-exit disconnect and quit\n: ')
         if recipient == '-exit':
             break
         elif recipient == '':
             print('Recipient should not be empty.')
+            continue
         text = input('Message: ')
         if text == '':
             print('Message should not be empty.')
+            continue
         if recipient == '-all':
             client.send_to_all(text)
         else:
@@ -26,7 +29,7 @@ def sending(client):
 
 
 def listening(client):
-    while True:
+    while client.active_session:
         client.listen()
 
 
@@ -60,6 +63,8 @@ def main():
         print(f'User {args.user} could not connect to the server')
         sys.exit()
 
+    print(f'Client logged as {args.user}.')
+
     listening_thread = threading.Thread(
         target=listening,
         args=(my_client,),
@@ -73,21 +78,6 @@ def main():
     listening_thread.start()
     sending_thread.start()
 
-    # while True:
-    #     recipient = input('Recipient/"-all" send to all/"-exit" disconnect and quit: ')
-    #     if recipient == '-exit':
-    #         break
-    #     elif recipient == '':
-    #         print('Recipient should not be empty.')
-    #     text = input('Message: ')
-    #     if text == '':
-    #         print('Message should not be empty.')
-    #     if recipient == '-all':
-    #         my_client.send_to_all(args.user, text)
-    #     else:
-    #         my_client.send_message(args.user, recipient, text)
-
-    # if args.mode == 'listen':
     while True:
         time.sleep(1)
         if not (listening_thread.is_alive() and sending_thread.is_alive()):
