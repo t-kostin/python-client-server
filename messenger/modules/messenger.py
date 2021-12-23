@@ -5,6 +5,8 @@ import json
 from select import select
 from .constants import *
 from .decorators import log
+from .meta.descriptors import PortDescriptor, IpAddressDescriptor
+from .meta.metaclass import JimMeta
 
 
 class EmptyLogger:
@@ -25,16 +27,20 @@ class EmptyLogger:
         pass
 
 
-class Jim:
+class Jim(metaclass=JimMeta):
+
+    port = PortDescriptor('port', 7777)
+    address = IpAddressDescriptor('address', 'localhost')
+
     def __init__(self, logger):
         self._logger = logger
 
-    @log
+    # @log
     def send(self, sock, data):
         binary_data = json.dumps(data).encode('utf-8')
         sock.send(binary_data)
 
-    @log
+    # @log
     def send_data(self, responses: dict, clients_all: list):
         for client, data in responses.items():
             try:
@@ -43,7 +49,7 @@ class Jim:
                 clients_all.remove(client)
                 client.close()
 
-    @log
+    # @log
     def receive(self, sock):
         try:
             binary_data = sock.recv(BUFFER_SIZE)
@@ -55,7 +61,7 @@ class Jim:
             self._logger.error('JSON decode error')
             return {}
 
-    @log
+    # @log
     def receive_data(self, clients_to_read: list, clients_all: list) -> dict:
         data = {}
         for client in clients_to_read:
@@ -95,7 +101,7 @@ class JimClient(Jim):
                                   f' refusing to connect')
             sys.exit()
 
-    def listen(self):
+    def attend(self):
         try:
             answer = self.receive(self.client_sock)
             if answer is None:
@@ -109,7 +115,7 @@ class JimClient(Jim):
         else:
             return self.process_response(answer)
 
-    @log
+    # @log
     def disconnect(self):
         message = {
             ACTION: CLOSE_SESSION,
@@ -119,7 +125,7 @@ class JimClient(Jim):
         self.send(self.client_sock, message)
         self.client_sock.close()
 
-    @log
+    # @log
     def send_presence(self, account_name: str, status: str):
         message = {
             ACTION: SEND_PRESENCE,
@@ -132,7 +138,7 @@ class JimClient(Jim):
         }
         self.send(self.client_sock, message)
         self.account_name = account_name
-        return self.listen()
+        return self.attend()
 
     def send_message(self, recipient: str, text: str):
         message = {
@@ -153,7 +159,7 @@ class JimClient(Jim):
         }
         self.send(self.client_sock, message)
 
-    @log
+    # @log
     def process_response(self, data: dict) -> None:
         handlers = {
             OK200: self.ok_handler,
@@ -178,7 +184,7 @@ class JimClient(Jim):
         print('\nUser not found')
         return self.error_handler(data)
 
-    @log
+    # @log
     def ok_handler(self, data: dict):
         try:
             code = data['code']
@@ -192,7 +198,7 @@ class JimClient(Jim):
             self.active_session = False
             sys.exit(1)
 
-    @log
+    # @log
     def error_handler(self, data: dict):
         try:
             code = data['code']
@@ -205,7 +211,7 @@ class JimClient(Jim):
             self.active_session = False
             sys.exit(1)
 
-    @log
+    # @log
     def message_handler(self, data: dict):
         try:
             print(f'\n{data[USER_NAME]}: {data[MESSAGE]}')
@@ -226,13 +232,15 @@ class JimServer(Jim):
         self.clients = []
         self.users = {}
         self.server_sock = socket(AF_INET, SOCK_STREAM)
-        self.server_sock.bind((address, port))
+        self.address = address
+        self.port = port
+
+    # @log
+    def listen(self) -> None:
+        self.server_sock.bind((self.address, self.port))
         self.server_sock.listen(self.REQUEST_QUEUE)
         self.server_sock.settimeout(self.TIMEOUT)
-        self._logger.info(f'Server created and will be listen to port {port}')
-
-    @log
-    def listen(self) -> None:
+        self._logger.info(f'Server created and will be listen to port {self.port}')
         try:
             while True:
                 try:
@@ -277,7 +285,7 @@ class JimServer(Jim):
             responses.update(self.process_request(client, data, clients_write))
         return responses
 
-    @log
+    # @log
     def process_request(self, client, data, clients_write) -> dict:
         handlers = {
             SEND_PRESENCE: self.presence,
@@ -294,7 +302,7 @@ class JimServer(Jim):
         except KeyError:
             return self.error_response(client, ERR400, INVALID_ACTION)
 
-    @log
+    # @log
     def presence(self, client, data, clients_write) -> dict:
         if client in clients_write:
             try:
@@ -340,7 +348,7 @@ class JimServer(Jim):
         client.close()
         return {}
 
-    @log
+    # @log
     def error_response(self, client, code: int, message: str) -> dict:
         response_data = {
             client: {
@@ -351,7 +359,7 @@ class JimServer(Jim):
         }
         return response_data
 
-    @log
+    # @log
     def ok_response(self, client, code: int, message='') -> dict:
         response_data = {
             client: {

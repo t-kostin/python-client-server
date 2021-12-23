@@ -30,7 +30,7 @@ def sending(client):
 
 def listening(client):
     while client.active_session:
-        client.listen()
+        client.attend()
 
 
 def main():
