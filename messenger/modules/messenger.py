@@ -27,7 +27,7 @@ class EmptyLogger:
         pass
 
 
-class Jim(metaclass=JimMeta):
+class Jim:
 
     port = PortDescriptor('port', 7777)
     address = IpAddressDescriptor('address', 'localhost')
