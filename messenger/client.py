@@ -14,6 +14,7 @@ def sending(client):
         recipient = input('Input recipient or\n-all send to all or\n'
                           '-exit disconnect and quit\n: ')
         if recipient == '-exit':
+            client.disconnect()
             break
         elif recipient == '':
             print('Recipient should not be empty.')
@@ -39,7 +40,7 @@ def main():
     parser.add_argument(
         'user',
         type=str,
-        help='User name. For testing valid names are user-1, user-2, user-3 and user-4',
+        help='User name',
     )
     parser.add_argument(
         'ip_addr',
@@ -82,8 +83,6 @@ def main():
         time.sleep(1)
         if not (listening_thread.is_alive() and sending_thread.is_alive()):
             break
-
-    my_client.disconnect()
 
 
 if __name__ == '__main__':

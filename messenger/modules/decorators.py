@@ -1,4 +1,3 @@
-# from functools import wraps
 import re
 from traceback import extract_stack, format_list
 
@@ -17,11 +16,11 @@ def log(func):
             self._logger.debug(f'Function <{func.__name__}> called '
                                f'with arguments {args}')
         result = func(self, *args, **kwargs)
-        if func.__name__ == 'error_response':
+        if func.__name__ == 'response_and_close':
             err_code = args[1]
             err_message = args[2]
             self._logger.error(f'{err_code}: {err_message}')
-        elif func.__name__ == 'ok_response':
+        elif func.__name__ == 'response':
             answer_code = args[1]
             message = args[2] if len(args) == 3 else ''
             self._logger.info(f'{answer_code}: {message}')
