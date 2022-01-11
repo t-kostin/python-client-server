@@ -1,5 +1,5 @@
 from subprocess import Popen, CREATE_NEW_CONSOLE
-from modules.constants import USER_LIST
+USER_LIST = ['user', 'user-2', 'user-3', 'user-9', 'user-4']
 
 
 def main():
