@@ -35,9 +35,7 @@ def main():
         args=(my_server,),
         daemon=True,
     )
-    print('Before thread')
     server_thread.start()
-    print('After thread')
     while True:
         command = input('-users to print all registered users\n'
                         '-active to print connected users\n'
