@@ -1,0 +1,18 @@
+{
+    "orders": [
+        {
+            "item": "Компьютер ASUS",
+            "quantity": 1,
+            "price": 328800.44,
+            "buyer": "Иванов",
+            "date": "1980-12-03"
+        },
+        {
+            "item": "Клавиатура Thermaltake",
+            "quantity": 2,
+            "price": 15999.0,
+            "buyer": "Петров",
+            "date": "1980-12-03"
+        }
+    ]
+}
