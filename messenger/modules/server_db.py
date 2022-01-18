@@ -3,11 +3,9 @@ from sqlalchemy import Table, Column
 from sqlalchemy import Integer, String, DateTime
 from sqlalchemy import create_engine, MetaData, ForeignKey
 from sqlalchemy.orm import mapper, sessionmaker
-from .constants import SERVER_DB
 
 
 class ServerDB:
-
     class Users:
 
         def __init__(self, user_name, last_login):
@@ -33,8 +31,28 @@ class ServerDB:
             self.port = port
             self.login_time = login_time
 
-    def __init__(self):
-        self.db_engine = create_engine(SERVER_DB, echo=False, pool_recycle=7200)
+    class UsersHistory:
+
+        def __init__(self, user_id, sent=0, received=0):
+            self.id = None
+            self.user_id = user_id
+            self.sent = sent
+            self.received = received
+
+    class Contacts:
+
+        def __init__(self, user_id, contact_id):
+            self.id = None
+            self.user_id = user_id
+            self.contact_id = contact_id
+
+    def __init__(self, file_name):
+        self.db_engine = create_engine(
+            'sqlite:///' + file_name,
+            echo=False,
+            pool_recycle=7200,
+            connect_args={'check_same_thread': False},
+        )
         self.metadata = MetaData()
 
         users_table = Table(
@@ -62,12 +80,29 @@ class ServerDB:
             Column('port', Integer),
             Column('login_time', DateTime),
         )
+        users_history = Table(
+            'users_history',
+            self.metadata,
+            Column('id', Integer, primary_key=True),
+            Column('user_id', ForeignKey('users.id')),
+            Column('sent', Integer),
+            Column('received', Integer),
+        )
+        contacts = Table(
+            'contacts',
+            self.metadata,
+            Column('id', Integer, primary_key=True),
+            Column('user_id', ForeignKey('users.id')),
+            Column('contact_id', ForeignKey('users.id')),
+        )
 
         self.metadata.create_all(self.db_engine)
 
         mapper(self.Users, users_table)
         mapper(self.ActiveUsers, active_users_table)
         mapper(self.LoginHistory, login_history)
+        mapper(self.UsersHistory, users_history)
+        mapper(self.Contacts, contacts)
 
         Session = sessionmaker(bind=self.db_engine)
         self.session = Session()
@@ -85,6 +120,8 @@ class ServerDB:
             user = self.Users(user_name, current_time)
             self.session.add(user)
             self.session.commit()
+            new_history_record = self.UsersHistory(user.id)
+            self.session.add(new_history_record)
 
         active_user = self.ActiveUsers(user.id, ip_address, port, current_time)
         user_history = self.LoginHistory(user.id, ip_address, port, current_time)
@@ -121,27 +158,79 @@ class ServerDB:
 
         return request.all()
 
+    def count_message(self, sender, recipient):
+        sender_id = self.session.query(self.Users). \
+            filter_by(name=sender).first().id
+        recipient_id = self.session.query(self.Users). \
+            filter_by(name=recipient).first().id
 
-if __name__ == '__main__':
-    test_db = ServerDB()
-    # Выполняем "подключение" пользователя
-    test_db.login('client_1', '192.168.1.4', 8080)
-    test_db.login('client_2', '192.168.1.5', 7777)
+        sender_row = self.session.query(self.UsersHistory). \
+            filter_by(user_id=sender_id).first()
+        recipient_row = self.session.query(self.UsersHistory). \
+            filter_by(user_id=recipient_id).first()
 
-    # Выводим список кортежей - активных пользователей
-    print(' ---- test_db.active_users_list() ----')
-    print(test_db.active_user_list())
+        sender_row.sent += 1
+        recipient_row.received += 1
 
-    # Выполняем "отключение" пользователя
-    test_db.logout('client_1')
-    # И выводим список активных пользователей
-    print(' ---- test_db.active_users_list() after logout client_1 ----')
-    print(test_db.active_user_list())
+        self.session.commit()
 
-    # Запрашиваем историю входов по пользователю
-    print(' ---- test_db.login_history(client_1) ----')
-    print(test_db.login_history('client_1'))
+    def count_send_to_all(self, sender, dict_of_active_users):
+        sender_id = self.session.query(self.Users). \
+            filter_by(name=sender).first().id
+        sender_row = self.session.query(self.UsersHistory). \
+            filter_by(user_id=sender_id).first()
+        sender_row.sent += 1
 
-    # и выводим список известных пользователей
-    print(' ---- test_db.users_list() ----')
-    print(test_db.user_list())
+        print(dict_of_active_users.keys())
+        for recipient in dict_of_active_users:
+            if sender != recipient:
+                print(f'{recipient=}')
+                recipient_id = self.session.query(self.Users). \
+                    filter_by(name=recipient).first().id
+                recipient_row = self.session.query(self.UsersHistory). \
+                    filter_by(user_id=recipient_id).first()
+                recipient_row.received += 1
+
+        self.session.commit()
+
+    def add_contact(self, user, contact):
+        user_row = self.session.query(self.Users). \
+            filter_by(name=user).first()
+        contact_row = self.session.query(self.Users). \
+            filter_by(name=contact).first()
+        contact_not_exists = not self.session.query(self.Contacts). \
+            filter_by(user_id=user_row.id, contact_id=contact_row.id).count()
+
+        if contact_row and contact_not_exists:
+            new_contact_row = self.Contacts(user_row.id, contact_row.id)
+            self.session.add(new_contact_row)
+            self.session.commit()
+
+    def remove_contact(self, user, contact):
+        contact_row = self.session.query(self.Users). \
+            filter_by(name=contact).first()
+
+        if contact_row:
+            user_row = self.session.query(self.Users). \
+                filter_by(name=user).first()
+            self.session.query(self.Contacts). \
+                filter_by(user_id=user_row.id, contact_id=contact_row.id). \
+                delete()
+            self.session.commit()
+
+    def get_contacts(self, user):
+        user_row = self.session.query(self.Users).filter_by(name=user).first()
+        contact_rows = not self.session.query(self.Contacts, self.Users.name). \
+            filter_by(user_id=user_row.id). \
+            join(self.Users, self.Contacts.contact_id == self.Users.id). \
+            all()
+        list_of_contact_names = [contact[1] for contact in contact_rows]
+        return list_of_contact_names
+
+    def messages_history(self):
+        return self.session.query(
+            self.Users.name,
+            self.Users.last_login,
+            self.UsersHistory.sent,
+            self.UsersHistory.received,
+        ).join(self.Users).all()

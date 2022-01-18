@@ -7,6 +7,7 @@ from .constants import *
 from .decorators import log
 from .meta.descriptors import PortDescriptor, IpAddressDescriptor
 from .server_db import ServerDB
+from threading import Lock
 
 
 class EmptyLogger:
@@ -79,8 +80,11 @@ class JimClient(Jim):
         self.address = address
         self.port = port
         self.client_sock = socket(AF_INET, SOCK_STREAM)
+        self.client_sock.settimeout(1)
         self.account_name = ''
         self.active_session = False
+        self.sock_locker = Lock()
+        self.dbase_locker = Lock()
 
     def connect(self):
         try:
@@ -235,6 +239,9 @@ class JimServer(Jim):
         self.address = address
         self.port = port
         self.dbase = dbase
+        self.thread_locker = Lock()
+        self.shutdown_locker = Lock()
+        self.clients_number_changed = False
         self.server_running = True
 
     def send_to_client(self, client_sock, data):
@@ -289,53 +296,83 @@ class JimServer(Jim):
             SEND_PRESENCE: self.presence,
             SEND_TO_ALL: self.to_all,
             SEND_MESSAGE: self.message,
+            GET_CONTACTS: self.contacts,
             CLOSE_SESSION: self.close_session,
         }
         try:
             action = data[ACTION]
+            if data[TIME] > self.timestamp:
+                self.response_and_close(client, ERR400, BAD_TIMESTAMP)
         except KeyError:
             self.response_and_close(client, ERR400, INVALID_JSON)
         try:
-            handlers[action](client, data, clients_write)
+            handlers[action](client, data)
         except KeyError:
             self.response_and_close(client, ERR400, INVALID_ACTION)
 
     @log
-    def presence(self, client_sock, data, clients_write):
-        if client_sock in clients_write:
-            try:
-                acc_name = data[USER][USER_NAME]
-                if acc_name in self.users:
-                    self.response_and_close(client_sock, ERR403, USER_ONLINE)
-                elif len(data[USER][STATUS]) == 0:
-                    self.response_and_close(client_sock, ERR400, NO_STATUS)
-                elif data[TIME] > self.timestamp:
-                    self.response_and_close(client_sock, ERR400, BAD_TIMESTAMP)
-                else:
-                    self.users.update({acc_name: client_sock})
-                    acc_ip, acc_port = client_sock.getpeername()
-                    self.dbase.login(acc_name, acc_ip, acc_port)
-                    self._logger.info(USER_LOGGED_IN % acc_name)
-                    self.response(client_sock, OK200)
-            except (KeyError, TypeError):
-                self.response_and_close(client_sock, ERR400, INVALID_JSON)
+    def presence(self, client_sock, data):
+        try:
+            acc_name = data[USER][USER_NAME]
+            if acc_name in self.users:
+                self.response_and_close(client_sock, ERR403, USER_ONLINE)
+            elif len(data[USER][STATUS]) == 0:
+                self.response_and_close(client_sock, ERR400, NO_STATUS)
+            else:
+                self.users.update({acc_name: client_sock})
+                acc_ip, acc_port = client_sock.getpeername()
+                self.dbase.login(acc_name, acc_ip, acc_port)
+                self._logger.info(USER_LOGGED_IN % acc_name)
+                self.response(client_sock, OK200)
+                with self.thread_locker:
+                    self.clients_number_changed =True
+        except (KeyError, TypeError):
+            self.response_and_close(client_sock, ERR400, INVALID_JSON)
 
-    def to_all(self, client, data, clients_write):
-        for current_client in clients_write:
-            if current_client != client:
-                self.send_to_client(current_client, data)
+    def to_all(self, client, data):
+        for current_user, current_sock in self.users.items():
+            if current_sock != client:
+                self.send_to_client(current_sock, data)
+        self.dbase.count_send_to_all(data[USER_NAME], self.users)
 
-    def message(self, client, data, *args):
+    def message(self, client, data):
         try:
             if data[USER_NAME] not in self.users:
                 self.response_and_close(client, ERR401, WRONG_USER)
-            elif data[TIME] > self.timestamp:
-                self.response_and_close(client, ERR400, BAD_TIMESTAMP)
             elif data[DESTINATION] in self.users:
                 self.send_to_client(self.users[data[DESTINATION]], data)
+                self.dbase.count_message(data[USER_NAME], data[DESTINATION])
             else:
                 self.response(client, ERR404, USER_OFFLINE)
         except (KeyError, TypeError):
+            self.response_and_close(client, ERR400, INVALID_JSON)
+
+    def registered_users(self, client, data):
+        try:
+            response_data = [user[0] for user in self.dbase.user_list()]
+            self.response(client, OK202, response_data)
+        except (KeyError, TypeError):
+            self.response_and_close(client, ERR400, INVALID_JSON)
+
+    def contacts(self, client, data):
+        try:
+            response_data = self.dbase.get_contacts(data[USER_NAME])
+            self.response(client, OK202, response_data)
+        except (KeyError, TypeError):
+            self.response_and_close(client, ERR400, INVALID_JSON)
+
+    def add_contact(self, client, data):
+        try:
+            self.dbase.add_contact(data[USER_NAME], data[CONTACT_NAME])
+            self.response(client, OK200)
+        except KeyError:
+            self.response_and_close(client, ERR400, INVALID_JSON)
+
+    def remove_contact(self, client, data):
+        try:
+            self.dbase.remove_contact(data[USER_NAME], data[CONTACT_NAME])
+            self.response(client, OK200)
+        except KeyError:
             self.response_and_close(client, ERR400, INVALID_JSON)
 
     def close_session(self, client, *args):
@@ -346,6 +383,8 @@ class JimServer(Jim):
                 self.dbase.logout(user_name)
                 break
         client.close()
+        with self.thread_locker:
+            self.clients_number_changed = True
 
     @log
     def response_and_close(self, client, code: int, message: str):
@@ -371,4 +410,9 @@ class JimServer(Jim):
         self.send_to_client(client, response_data)
 
     def shutdown(self):
-        self.server_running = False
+        with self.shutdown_locker:
+            self.server_running = False
+
+    def clients_refreshed(self):
+        with self.thread_locker:
+            self.clients_number_changed = False

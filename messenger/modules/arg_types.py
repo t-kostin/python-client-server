@@ -5,7 +5,7 @@ def ip_address(address_string: str) -> str:
     pattern = r'(?a)(localhost)|' \
               r'(((\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}' \
               r'(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]))'
-    if fullmatch(pattern, address_string):
+    if address_string == '' or fullmatch(pattern, address_string):
         return address_string
     else:
         raise ValueError

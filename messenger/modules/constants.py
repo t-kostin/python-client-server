@@ -1,6 +1,7 @@
 BUFFER_SIZE = 4096
 
 OK200 = 200
+OK202 = 202
 ERR400 = 400
 ERR401 = 401
 ERR403 = 403
@@ -20,17 +21,22 @@ SEND_PRESENCE = 'presence'
 SEND_MESSAGE = 'message'
 SEND_TO_ALL = 'to_all'
 CLOSE_SESSION = 'exit'
+GET_CONTACTS = 'contacts'
+ADD_CONTACT = 'add_contact'
+REMOVE_CONTACT = 'rem_contact'
+GET_USERS = 'get_users'
+
 
 ACTION = 'action'
 DESTINATION = 'destination'
 TYPE = 'type'
 USER = 'user'
 USER_NAME = 'account_name'
+CONTACT_NAME = 'contact_name'
 STATUS = 'status'
 CODE = 'code'
 TIME = 'time'
 ALERT = 'alert'
 MESSAGE = 'message_text'
 
-SERVER_DB = 'sqlite:///server_db.db3'
-CLIENT_DB = 'sqlite:///client_db.db3'
+CLIENT_DB = 'sqlite:///client_db_%s.db3'

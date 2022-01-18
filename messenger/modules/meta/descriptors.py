@@ -34,7 +34,8 @@ class IpAddressDescriptor:
         pattern = r'(?a)(localhost)|' \
                   r'(((\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}' \
                   r'(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]))'
-        if not isinstance(address, self.type) or not fullmatch(pattern, address):
+        if not isinstance(address, self.type) or \
+                (not fullmatch(pattern, address) and address != ''):
             raise TypeError('Not valid ip address')
         setattr(instance, self.name, address)
 
