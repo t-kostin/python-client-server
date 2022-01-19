@@ -3,7 +3,7 @@ from sqlalchemy import Table, Column
 from sqlalchemy import Integer, String, Text, DateTime
 from sqlalchemy import create_engine, MetaData, ForeignKey
 from sqlalchemy.orm import mapper, sessionmaker
-from constants import CLIENT_DB
+from .constants import CLIENT_DB
 
 
 class ClientDB:
@@ -23,7 +23,7 @@ class ClientDB:
             self.id = None
             self.from_user = from_user
             self.to_user = to_user
-            self.message_text = message_text
+            self.message = message_text
             self.date = datetime.now()
 
     def __init__(self, user_name):
@@ -78,7 +78,7 @@ class ClientDB:
         self.session.query(self.Contacts).filter_by(name=contact).delete()
         self.session.commit()
 
-    def registered_users(self, users_list):
+    def add_users(self, users_list):
         self.session.query(self.Users).delete()
         for user in users_list:
             user_row = self.Users(user)

@@ -181,10 +181,8 @@ class ServerDB:
             filter_by(user_id=sender_id).first()
         sender_row.sent += 1
 
-        print(dict_of_active_users.keys())
         for recipient in dict_of_active_users:
             if sender != recipient:
-                print(f'{recipient=}')
                 recipient_id = self.session.query(self.Users). \
                     filter_by(name=recipient).first().id
                 recipient_row = self.session.query(self.UsersHistory). \
@@ -220,7 +218,7 @@ class ServerDB:
 
     def get_contacts(self, user):
         user_row = self.session.query(self.Users).filter_by(name=user).first()
-        contact_rows = not self.session.query(self.Contacts, self.Users.name). \
+        contact_rows = self.session.query(self.Contacts, self.Users.name). \
             filter_by(user_id=user_row.id). \
             join(self.Users, self.Contacts.contact_id == self.Users.id). \
             all()

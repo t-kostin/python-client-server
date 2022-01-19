@@ -1,5 +1,5 @@
 import sys
-from socket import socket, AF_INET, SOCK_STREAM
+from socket import socket, AF_INET, SOCK_STREAM, timeout
 import time
 import json
 from select import select
@@ -7,6 +7,7 @@ from .constants import *
 from .decorators import log
 from .meta.descriptors import PortDescriptor, IpAddressDescriptor
 from .server_db import ServerDB
+from .client_db import ClientDB
 from threading import Lock
 
 
@@ -75,26 +76,32 @@ class Jim:
 
 class JimClient(Jim):
 
-    def __init__(self, address: str, port: int, logger=EmptyLogger()) -> None:
+    def __init__(self, address: str, port: int, dbase: ClientDB, logger=EmptyLogger()) -> None:
         super().__init__(logger)
         self.address = address
         self.port = port
         self.client_sock = socket(AF_INET, SOCK_STREAM)
-        self.client_sock.settimeout(1)
+        self.client_sock.settimeout(1.1)
         self.account_name = ''
         self.active_session = False
         self.sock_locker = Lock()
         self.dbase_locker = Lock()
+        self.dbase = dbase
 
     def connect(self):
         try:
             self.client_sock.connect((self.address, self.port))
             self.active_session = True
             self._logger.debug(f'Connected to server {self.address}:{self.port}')
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, timeout):
             self._logger.critical(f'Server {self.address}:{self.port}'
                                   f' refusing to connect')
             sys.exit()
+
+    def attend_with_lock(self):
+        time.sleep(1)
+        with self.sock_locker:
+            self.attend()
 
     def attend(self):
         try:
@@ -106,7 +113,7 @@ class JimClient(Jim):
                 print('Connection to server is lost')
                 sys.exit(1)
         except OSError:
-            pass
+            return ERR504
         else:
             return self.process_response(answer)
 
@@ -117,7 +124,10 @@ class JimClient(Jim):
             TIME: self.timestamp,
             USER_NAME: self.account_name,
         }
-        self.send(self.client_sock, message)
+        try:
+            self.send(self.client_sock, message)
+        except (ConnectionError, ConnectionResetError, ConnectionAbortedError):
+            pass
         time.sleep(1)
         self.client_sock.close()
         self.active_session = False
@@ -137,6 +147,83 @@ class JimClient(Jim):
         self.account_name = account_name
         return self.attend()
 
+    def request_users(self, account_name: str):
+        message = {
+            ACTION: GET_USERS,
+            TIME: self.timestamp,
+            USER_NAME: account_name,
+        }
+        self.send(self.client_sock, message)
+        self.account_name = account_name
+        user_list = self.attend()
+        if isinstance(user_list, list):
+            self.dbase.add_users(user_list)
+        else:
+            print('Server responded with error %s' % user_list)
+
+    def request_contacts(self, account_name: str):
+        message = {
+            ACTION: GET_CONTACTS,
+            TIME: self.timestamp,
+            USER_NAME: account_name,
+        }
+        self.send(self.client_sock, message)
+        self.account_name = account_name
+        contact_list = self.attend()
+        if isinstance(contact_list, list):
+            for contact in contact_list:
+                self.dbase.add_contact(contact)
+        else:
+            print('Server responded with error %s' % contact_list)
+
+    def get_contacts(self):
+        with self.dbase_locker:
+            return self.dbase.get_contacts()
+
+    def get_users(self):
+        with self.dbase_locker:
+            return self.dbase.get_users()
+
+    def add_contact(self, contact):
+        message = {
+            ACTION: ADD_CONTACT,
+            TIME: self.timestamp,
+            USER_NAME: self.account_name,
+            CONTACT_NAME: contact,
+        }
+        with self.dbase_locker:
+            if self.dbase.is_registered_user(contact):
+                self.dbase.add_contact(contact)
+                with self.sock_locker:
+                    self.send(self.client_sock, message)
+                    answer = self.attend()
+                    if answer != OK200:
+                        print('Server can\'t add contact %s' % contact)
+            else:
+                print('Cannot add: %s is not registered user' % contact)
+
+    def remove_contact(self, contact):
+        message = {
+            ACTION: REMOVE_CONTACT,
+            TIME: self.timestamp,
+            USER_NAME: self.account_name,
+            CONTACT_NAME: contact,
+        }
+        with self.dbase_locker:
+            if self.dbase.is_contact(contact):
+                self.dbase.remove_contact(contact)
+                with self.sock_locker:
+                    self.send(self.client_sock, message)
+                    answer = self.attend()
+                    if answer != OK200:
+                        print('Server can\'t remove contact %s' % contact)
+            else:
+                print('Cannot remove: %s not in contact list' % contact)
+
+    def get_history(self, from_user=None, to_user=None):
+        with self.dbase_locker:
+            return self.dbase.get_message_history(from_user, to_user)
+
     def send_message(self, recipient: str, text: str):
         message = {
             ACTION: SEND_MESSAGE,
@@ -145,7 +232,15 @@ class JimClient(Jim):
             DESTINATION: recipient,
             MESSAGE: text,
         }
-        self.send(self.client_sock, message)
+        if self.dbase.is_registered_user(recipient):
+            with self.sock_locker:
+                self.send(self.client_sock, message)
+            with self.dbase_locker:
+                self.dbase.save_message(message[USER_NAME],
+                                        message[DESTINATION],
+                                        message[MESSAGE])
+        else:
+            print('User %s not found' % recipient)
 
     def send_to_all(self, text: str):
         message = {
@@ -154,12 +249,18 @@ class JimClient(Jim):
             USER_NAME: self.account_name,
             MESSAGE: text,
         }
-        self.send(self.client_sock, message)
+        with self.sock_locker:
+            self.send(self.client_sock, message)
+        with self.dbase_locker:
+            self.dbase.save_message(message[USER_NAME],
+                                    '///TO_ALL',
+                                    message[MESSAGE])
 
     # @log
     def process_response(self, data: dict) -> None:
         handlers = {
             OK200: self.ok_handler,
+            OK202: self.user_list,
             ERR400: self.error_handler,
             ERR401: self.error_handler,
             ERR403: self.user_already_online,
@@ -219,7 +320,23 @@ class JimClient(Jim):
     def message_handler(self, data: dict):
         try:
             print(f'\n{data[USER_NAME]}: {data[MESSAGE]}')
+            with self.dbase_locker:
+                self.dbase.save_message(data[USER_NAME],
+                                        self.account_name,
+                                        data[MESSAGE])
         except KeyError:
+            self._logger.critical(INVALID_JSON)
+            self.client_sock.close()
+            self.active_session = False
+            sys.exit(1)
+
+    def user_list(self, data: dict):
+        try:
+            user_list = data[ALERT]
+            if not isinstance(user_list, list):
+                raise ValueError
+            return user_list
+        except (KeyError, ValueError):
             self._logger.critical(INVALID_JSON)
             self.client_sock.close()
             self.active_session = False
@@ -228,7 +345,7 @@ class JimClient(Jim):
 
 class JimServer(Jim):
     REQUEST_QUEUE = 5
-    TIMEOUT = 1
+    TIMEOUT = 0.5
     SELECT_WAIT = 0
 
     def __init__(self, address: str, port: int, dbase: ServerDB, logger=EmptyLogger()) -> None:
@@ -297,14 +414,19 @@ class JimServer(Jim):
             SEND_TO_ALL: self.to_all,
             SEND_MESSAGE: self.message,
             GET_CONTACTS: self.contacts,
+            GET_USERS: self.registered_users,
+            ADD_CONTACT: self.add_contact,
+            REMOVE_CONTACT: self.remove_contact,
             CLOSE_SESSION: self.close_session,
         }
         try:
             action = data[ACTION]
             if data[TIME] > self.timestamp:
                 self.response_and_close(client, ERR400, BAD_TIMESTAMP)
+                return
         except KeyError:
             self.response_and_close(client, ERR400, INVALID_JSON)
+            return
         try:
             handlers[action](client, data)
         except KeyError:
@@ -325,7 +447,7 @@ class JimServer(Jim):
                 self._logger.info(USER_LOGGED_IN % acc_name)
                 self.response(client_sock, OK200)
                 with self.thread_locker:
-                    self.clients_number_changed =True
+                    self.clients_number_changed = True
         except (KeyError, TypeError):
             self.response_and_close(client_sock, ERR400, INVALID_JSON)
 

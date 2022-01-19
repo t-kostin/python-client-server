@@ -6,6 +6,7 @@ ERR400 = 400
 ERR401 = 401
 ERR403 = 403
 ERR404 = 404
+ERR504 = 504
 
 INVALID_JSON = 'Invalid JSON format'
 BAD_TIMESTAMP = 'Bad timestamp'
@@ -23,7 +24,7 @@ SEND_TO_ALL = 'to_all'
 CLOSE_SESSION = 'exit'
 GET_CONTACTS = 'contacts'
 ADD_CONTACT = 'add_contact'
-REMOVE_CONTACT = 'rem_contact'
+REMOVE_CONTACT = 'del_contact'
 GET_USERS = 'get_users'
 
 
