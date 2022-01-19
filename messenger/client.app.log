@@ -1,0 +1,466 @@
+2022-01-14 21:39:23,805 DEBUG     client Application Started
+2022-01-14 21:39:23,809 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:39:23,840 INFO      messenger Ok (200): no additional message provided
+2022-01-14 21:39:41,624 DEBUG     client Application Started
+2022-01-14 21:39:41,627 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:39:42,670 INFO      messenger Ok (200): no additional message provided
+2022-01-14 21:39:55,649 DEBUG     client Application Started
+2022-01-14 21:39:55,653 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:39:55,667 INFO      messenger Ok (200): no additional message provided
+2022-01-14 21:42:16,412 DEBUG     client Application Started
+2022-01-14 21:42:16,416 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:42:18,659 DEBUG     client Application Started
+2022-01-14 21:42:20,659 DEBUG     client Application Started
+2022-01-14 21:42:20,714 CRITICAL  messenger Server localhost:7777 refusing to connect
+2022-01-14 21:42:22,689 CRITICAL  messenger Server localhost:7777 refusing to connect
+2022-01-14 21:42:39,312 DEBUG     client Application Started
+2022-01-14 21:42:39,316 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:44:00,533 DEBUG     client Application Started
+2022-01-14 21:44:00,537 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:44:00,554 INFO      messenger Ok (200): no additional message provided
+2022-01-14 21:44:02,987 DEBUG     client Application Started
+2022-01-14 21:44:02,991 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:44:04,017 INFO      messenger Ok (200): no additional message provided
+2022-01-14 21:44:05,870 DEBUG     client Application Started
+2022-01-14 21:44:05,874 DEBUG     messenger Connected to server localhost:7777
+2022-01-14 21:44:06,905 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:10:55,594 DEBUG     client Application Started
+2022-01-15 12:10:55,597 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:10:55,614 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:10:58,142 DEBUG     client Application Started
+2022-01-15 12:10:58,145 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:10:58,161 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:11:00,565 DEBUG     client Application Started
+2022-01-15 12:11:00,569 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:11:00,586 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:11:15,354 DEBUG     client Application Started
+2022-01-15 12:11:15,358 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:11:16,394 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:11:33,055 DEBUG     client Application Started
+2022-01-15 12:11:33,059 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:11:34,088 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:19:16,984 DEBUG     client Application Started
+2022-01-15 12:19:16,988 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:19:17,007 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:19:19,726 DEBUG     client Application Started
+2022-01-15 12:19:19,730 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:19:19,741 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:19:22,200 DEBUG     client Application Started
+2022-01-15 12:19:22,203 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:19:22,212 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:19:24,759 DEBUG     client Application Started
+2022-01-15 12:19:24,762 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:19:25,776 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:19:28,915 DEBUG     client Application Started
+2022-01-15 12:19:28,919 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:19:29,945 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:22:36,881 DEBUG     client Application Started
+2022-01-15 12:22:36,884 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:22:36,900 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:22:39,175 DEBUG     client Application Started
+2022-01-15 12:22:39,179 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:22:39,189 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:30:11,569 DEBUG     client Application Started
+2022-01-15 12:30:11,573 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:30:11,585 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:30:19,138 DEBUG     client Application Started
+2022-01-15 12:30:19,142 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:30:20,161 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:30:22,973 DEBUG     client Application Started
+2022-01-15 12:30:22,977 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:30:22,985 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:38:06,238 DEBUG     client Application Started
+2022-01-15 12:38:06,242 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:51:19,968 DEBUG     client Application Started
+2022-01-15 12:51:19,972 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:51:19,985 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:51:28,652 DEBUG     client Application Started
+2022-01-15 12:51:28,656 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:51:28,673 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:51:40,764 DEBUG     client Application Started
+2022-01-15 12:51:40,767 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:51:41,782 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:51:43,435 DEBUG     client Application Started
+2022-01-15 12:51:43,439 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:51:44,457 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:51:46,275 DEBUG     client Application Started
+2022-01-15 12:51:46,279 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:51:46,288 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:52:02,381 ERROR     messenger Error (404): You recipient now offline
+2022-01-15 12:52:07,951 DEBUG     client Application Started
+2022-01-15 12:52:07,955 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:52:08,973 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:52:12,285 DEBUG     client Application Started
+2022-01-15 12:52:12,289 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:52:12,298 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:52:14,592 DEBUG     client Application Started
+2022-01-15 12:52:14,596 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:52:15,608 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:52:34,211 DEBUG     client Application Started
+2022-01-15 12:52:34,214 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:52:35,232 INFO      messenger Ok (200): no additional message provided
+2022-01-15 12:52:53,467 DEBUG     client Application Started
+2022-01-15 12:52:53,471 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 12:52:53,487 INFO      messenger Ok (200): no additional message provided
+2022-01-15 14:28:37,600 DEBUG     client Application Started
+2022-01-15 14:28:37,604 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 14:28:37,615 INFO      messenger Ok (200): no additional message provided
+2022-01-15 14:28:47,728 DEBUG     client Application Started
+2022-01-15 14:28:47,731 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 14:28:48,757 INFO      messenger Ok (200): no additional message provided
+2022-01-15 14:28:53,479 DEBUG     client Application Started
+2022-01-15 14:28:53,483 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 14:28:54,514 INFO      messenger Ok (200): no additional message provided
+2022-01-15 14:28:58,091 DEBUG     client Application Started
+2022-01-15 14:28:58,095 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 14:28:59,110 INFO      messenger Ok (200): no additional message provided
+2022-01-15 14:29:05,214 DEBUG     client Application Started
+2022-01-15 14:29:05,218 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 14:29:05,232 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:36:24,716 DEBUG     client Application Started
+2022-01-15 23:36:24,720 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:36:25,745 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:36:27,693 DEBUG     client Application Started
+2022-01-15 23:36:27,696 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:36:28,713 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:36:30,711 DEBUG     client Application Started
+2022-01-15 23:36:30,715 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:36:31,732 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:36:34,361 DEBUG     client Application Started
+2022-01-15 23:36:34,365 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:36:34,384 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:36:37,408 DEBUG     client Application Started
+2022-01-15 23:36:37,412 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:36:37,426 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:36:55,579 DEBUG     client Application Started
+2022-01-15 23:36:57,614 CRITICAL  messenger Server localhost:7777 refusing to connect
+2022-01-15 23:39:02,107 DEBUG     client Application Started
+2022-01-15 23:39:02,111 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:39:02,134 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:39:04,266 DEBUG     client Application Started
+2022-01-15 23:39:04,270 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:39:05,295 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:39:07,023 DEBUG     client Application Started
+2022-01-15 23:39:07,027 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:39:08,044 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:39:09,114 DEBUG     client Application Started
+2022-01-15 23:39:09,118 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:39:09,130 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:39:11,468 DEBUG     client Application Started
+2022-01-15 23:39:11,471 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:39:12,503 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:41:03,344 DEBUG     client Application Started
+2022-01-15 23:41:03,348 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:41:03,370 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:41:05,229 DEBUG     client Application Started
+2022-01-15 23:41:05,231 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:41:05,242 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:41:07,058 DEBUG     client Application Started
+2022-01-15 23:41:07,062 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:41:08,072 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:41:09,748 DEBUG     client Application Started
+2022-01-15 23:41:09,752 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:41:10,783 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:41:11,294 DEBUG     client Application Started
+2022-01-15 23:41:11,297 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:41:11,307 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:42:36,932 DEBUG     client Application Started
+2022-01-15 23:42:36,936 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:42:36,953 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:42:39,031 DEBUG     client Application Started
+2022-01-15 23:42:39,035 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:42:40,062 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:42:41,415 DEBUG     client Application Started
+2022-01-15 23:42:41,418 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:42:41,430 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:42:43,226 DEBUG     client Application Started
+2022-01-15 23:42:43,230 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:42:43,244 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:42:45,315 DEBUG     client Application Started
+2022-01-15 23:42:45,319 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:42:46,332 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:47:35,683 DEBUG     client Application Started
+2022-01-15 23:47:35,687 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:47:35,704 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:47:38,340 DEBUG     client Application Started
+2022-01-15 23:47:38,344 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:47:39,368 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:47:41,777 DEBUG     client Application Started
+2022-01-15 23:47:41,780 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:47:42,808 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:47:43,723 DEBUG     client Application Started
+2022-01-15 23:47:43,726 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:47:43,738 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:47:45,882 DEBUG     client Application Started
+2022-01-15 23:47:45,886 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:47:46,914 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:48:42,677 DEBUG     client Application Started
+2022-01-15 23:48:42,681 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:48:42,699 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:48:44,448 DEBUG     client Application Started
+2022-01-15 23:48:44,451 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:48:44,464 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:48:47,044 DEBUG     client Application Started
+2022-01-15 23:48:47,047 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:48:47,067 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:48:48,859 DEBUG     client Application Started
+2022-01-15 23:48:48,863 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:48:49,882 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:48:50,769 DEBUG     client Application Started
+2022-01-15 23:48:50,773 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:48:51,803 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:52:32,226 DEBUG     client Application Started
+2022-01-15 23:52:32,230 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:52:33,255 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:52:34,020 DEBUG     client Application Started
+2022-01-15 23:52:34,024 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:52:35,042 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:52:36,215 DEBUG     client Application Started
+2022-01-15 23:52:36,219 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:52:37,236 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:52:38,227 DEBUG     client Application Started
+2022-01-15 23:52:38,231 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:52:38,245 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:52:53,941 DEBUG     client Application Started
+2022-01-15 23:52:53,944 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:52:54,961 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:54:04,734 DEBUG     client Application Started
+2022-01-15 23:54:04,738 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:54:04,758 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:54:06,748 DEBUG     client Application Started
+2022-01-15 23:54:06,751 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:54:07,776 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:54:09,308 DEBUG     client Application Started
+2022-01-15 23:54:09,312 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:54:10,332 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:54:11,388 DEBUG     client Application Started
+2022-01-15 23:54:11,392 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:54:11,415 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:54:14,360 DEBUG     client Application Started
+2022-01-15 23:54:14,364 DEBUG     messenger Connected to server localhost:7777
+2022-01-15 23:54:15,402 INFO      messenger Ok (200): no additional message provided
+2022-01-15 23:54:38,561 ERROR     messenger Error (404): You recipient now offline
+2022-01-17 20:11:09,447 DEBUG     client Application Started
+2022-01-17 20:11:09,451 DEBUG     messenger Connected to server localhost:7777
+2022-01-17 20:37:21,355 DEBUG     client Application Started
+2022-01-17 20:37:21,359 DEBUG     messenger Connected to server localhost:7777
+2022-01-17 20:37:53,366 DEBUG     client Application Started
+2022-01-17 20:37:57,482 DEBUG     client Application Started
+2022-01-17 20:37:59,529 CRITICAL  messenger Server localhost:7777 refusing to connect
+2022-01-17 20:38:10,047 DEBUG     client Application Started
+2022-01-17 20:38:10,051 DEBUG     messenger Connected to server localhost:7777
+2022-01-17 20:41:32,921 DEBUG     client Application Started
+2022-01-17 20:41:32,925 DEBUG     messenger Connected to server localhost:7777
+2022-01-17 20:41:32,937 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:05:03,438 DEBUG     client Application Started
+2022-01-19 15:08:45,403 DEBUG     client Application Started
+2022-01-19 15:11:10,700 DEBUG     client Application Started
+2022-01-19 15:11:10,739 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:11:25,188 DEBUG     client Application Started
+2022-01-19 15:11:25,209 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:12:44,236 DEBUG     client Application Started
+2022-01-19 15:12:44,257 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:14:28,566 DEBUG     client Application Started
+2022-01-19 15:14:28,587 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:14:28,600 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:18:03,275 DEBUG     client Application Started
+2022-01-19 15:18:03,296 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:18:10,158 DEBUG     client Application Started
+2022-01-19 15:18:10,179 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:19:54,953 DEBUG     client Application Started
+2022-01-19 15:19:54,974 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:22:06,496 DEBUG     client Application Started
+2022-01-19 15:22:06,517 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:24:11,812 DEBUG     client Application Started
+2022-01-19 15:24:11,834 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:24:11,847 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:25:37,312 DEBUG     client Application Started
+2022-01-19 15:25:37,333 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:25:37,341 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:27:57,197 DEBUG     client Application Started
+2022-01-19 15:27:57,218 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:29:06,668 DEBUG     client Application Started
+2022-01-19 15:29:06,689 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:29:06,702 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:29:07,704 ERROR     messenger Error (400): Invalid action
+2022-01-19 15:44:22,686 DEBUG     client Application Started
+2022-01-19 15:44:22,706 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:44:22,718 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:44:23,730 ERROR     messenger Error (400): Invalid action
+2022-01-19 15:44:55,343 DEBUG     client Application Started
+2022-01-19 15:44:55,364 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:44:56,390 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:44:57,403 ERROR     messenger Error (400): Invalid action
+2022-01-19 15:46:26,071 DEBUG     client Application Started
+2022-01-19 15:46:26,091 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:46:26,105 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:46:28,126 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:50:13,402 DEBUG     client Application Started
+2022-01-19 15:50:13,424 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:50:13,434 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:50:15,448 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:52:34,143 DEBUG     client Application Started
+2022-01-19 15:52:34,164 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:52:34,177 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:52:36,208 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:53:20,849 DEBUG     client Application Started
+2022-01-19 15:53:20,870 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:53:20,884 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:53:22,901 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:55:37,459 DEBUG     client Application Started
+2022-01-19 15:55:37,480 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:55:38,492 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:55:40,507 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:56:32,145 DEBUG     client Application Started
+2022-01-19 15:56:32,167 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:56:32,180 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:56:34,210 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:57:25,767 DEBUG     client Application Started
+2022-01-19 15:57:25,788 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:57:26,802 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:57:28,819 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:58:26,720 DEBUG     client Application Started
+2022-01-19 15:58:26,742 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:58:26,755 INFO      messenger Ok (200): no additional message provided
+2022-01-19 15:58:28,779 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 15:59:47,407 DEBUG     client Application Started
+2022-01-19 15:59:47,429 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 15:59:48,445 INFO      messenger Ok (200): no additional message provided
+2022-01-19 16:12:34,585 DEBUG     client Application Started
+2022-01-19 16:12:34,606 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:12:35,628 INFO      messenger Ok (200): no additional message provided
+2022-01-19 16:14:23,840 DEBUG     client Application Started
+2022-01-19 16:14:23,862 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:14:23,874 INFO      messenger Ok (200): no additional message provided
+2022-01-19 16:15:33,784 DEBUG     client Application Started
+2022-01-19 16:15:33,806 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:16:40,089 DEBUG     client Application Started
+2022-01-19 16:16:40,125 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:16:41,130 CRITICAL  messenger User already online
+2022-01-19 16:17:10,015 DEBUG     client Application Started
+2022-01-19 16:17:10,036 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:18:33,551 DEBUG     client Application Started
+2022-01-19 16:18:33,572 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:18:33,573 CRITICAL  messenger User already online
+2022-01-19 16:18:56,075 DEBUG     client Application Started
+2022-01-19 16:18:56,098 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:18:57,108 CRITICAL  messenger Invalid JSON format
+2022-01-19 16:20:19,535 DEBUG     client Application Started
+2022-01-19 16:20:19,557 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:20:19,569 INFO      messenger Ok (200): no additional message provided
+2022-01-19 16:20:20,071 CRITICAL  messenger Invalid JSON format
+2022-01-19 16:21:42,332 DEBUG     client Application Started
+2022-01-19 16:21:42,354 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:21:42,867 CRITICAL  messenger Invalid JSON format
+2022-01-19 16:21:46,695 DEBUG     client Application Started
+2022-01-19 16:21:46,717 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:21:46,718 CRITICAL  messenger User already online
+2022-01-19 16:21:50,659 DEBUG     client Application Started
+2022-01-19 16:21:50,680 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:21:51,193 CRITICAL  messenger Invalid JSON format
+2022-01-19 16:31:03,775 DEBUG     client Application Started
+2022-01-19 16:31:03,811 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:31:04,821 INFO      messenger Ok (200): no additional message provided
+2022-01-19 16:39:09,244 DEBUG     client Application Started
+2022-01-19 16:39:09,265 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:39:09,611 INFO      messenger Ok (200): no additional message provided
+2022-01-19 16:59:02,070 DEBUG     client Application Started
+2022-01-19 16:59:02,091 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 16:59:02,415 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:04:20,813 DEBUG     client Application Started
+2022-01-19 17:04:20,834 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:04:21,358 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:07:18,556 DEBUG     client Application Started
+2022-01-19 17:07:18,577 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:07:18,587 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:13:12,155 DEBUG     client Application Started
+2022-01-19 17:13:12,177 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:13:12,187 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:31:50,733 DEBUG     client Application Started
+2022-01-19 17:31:50,753 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:31:50,764 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:37:46,205 DEBUG     client Application Started
+2022-01-19 17:37:46,227 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:37:46,754 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:38:48,500 DEBUG     client Application Started
+2022-01-19 17:38:48,521 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:38:48,532 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:39:19,964 DEBUG     client Application Started
+2022-01-19 17:39:19,999 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:39:20,497 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:57:07,195 DEBUG     client Application Started
+2022-01-19 17:57:07,216 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:57:07,736 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:57:30,644 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:57:47,381 INFO      messenger Ok (200): no additional message provided
+2022-01-19 17:58:00,148 DEBUG     client Application Started
+2022-01-19 17:58:00,169 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 17:58:00,684 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:07:38,568 DEBUG     client Application Started
+2022-01-19 18:07:38,590 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 18:07:39,104 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:08:22,894 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:16:17,400 DEBUG     client Application Started
+2022-01-19 18:19:05,113 DEBUG     client Application Started
+2022-01-19 18:19:06,250 CRITICAL  messenger Server localhost:7777 refusing to connect
+2022-01-19 18:20:24,256 DEBUG     client Application Started
+2022-01-19 18:20:24,277 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 18:20:24,810 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:20:36,687 DEBUG     client Application Started
+2022-01-19 18:20:36,734 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 18:20:37,250 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:20:51,474 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:22:05,685 ERROR     messenger Error (404): You recipient now offline
+2022-01-19 18:33:50,820 DEBUG     client Application Started
+2022-01-19 18:33:50,841 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 18:33:50,851 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:34:33,110 ERROR     messenger Error (404): You recipient now offline
+2022-01-19 18:34:42,215 DEBUG     client Application Started
+2022-01-19 18:34:42,236 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 18:34:42,743 INFO      messenger Ok (200): no additional message provided
+2022-01-19 18:38:33,063 DEBUG     client Application Started
+2022-01-19 18:38:33,084 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 18:38:33,598 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:28:19,037 DEBUG     client Application Started
+2022-01-19 19:28:19,074 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:28:19,613 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:28:34,274 DEBUG     client Application Started
+2022-01-19 19:28:34,313 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:28:34,845 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:28:45,659 DEBUG     client Application Started
+2022-01-19 19:28:45,698 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:28:46,222 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:29:09,947 DEBUG     client Application Started
+2022-01-19 19:29:09,968 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:29:10,478 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:29:46,097 ERROR     messenger Error (400): Invalid JSON format
+2022-01-19 19:38:08,211 DEBUG     client Application Started
+2022-01-19 19:38:08,233 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:38:08,244 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:38:11,515 DEBUG     client Application Started
+2022-01-19 19:38:11,536 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:38:11,542 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:38:14,447 DEBUG     client Application Started
+2022-01-19 19:38:14,469 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:38:14,988 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:43:31,543 DEBUG     client Application Started
+2022-01-19 19:43:31,564 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:43:31,575 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:43:47,570 DEBUG     client Application Started
+2022-01-19 19:43:47,592 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:43:48,110 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:43:51,064 DEBUG     client Application Started
+2022-01-19 19:43:51,086 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:43:51,593 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:43:54,408 DEBUG     client Application Started
+2022-01-19 19:43:54,429 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:43:54,956 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:47:48,989 DEBUG     client Application Started
+2022-01-19 19:47:49,030 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:47:49,543 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:47:52,521 DEBUG     client Application Started
+2022-01-19 19:47:52,560 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:47:53,077 INFO      messenger Ok (200): no additional message provided
+2022-01-19 19:47:59,667 DEBUG     client Application Started
+2022-01-19 19:47:59,705 DEBUG     messenger Connected to server localhost:7777
+2022-01-19 19:48:00,225 INFO      messenger Ok (200): no additional message provided
