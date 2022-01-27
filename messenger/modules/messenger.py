@@ -3,6 +3,8 @@ from socket import socket, AF_INET, SOCK_STREAM, timeout
 import time
 import json
 from select import select
+from PyQt5.QtCore import pyqtSignal, QObject
+
 from .constants import *
 from .decorators import log
 from .meta.descriptors import PortDescriptor, IpAddressDescriptor
@@ -74,10 +76,12 @@ class Jim:
         return time.time()
 
 
-class JimClient(Jim):
+class JimClient(Jim, QObject):
+    message_signal = pyqtSignal(str)
 
     def __init__(self, address: str, port: int, dbase: ClientDB, logger=EmptyLogger()) -> None:
-        super().__init__(logger)
+        Jim.__init__(self, logger)
+        QObject.__init__(self)
         self.address = address
         self.port = port
         self.client_sock = socket(AF_INET, SOCK_STREAM)
@@ -147,34 +151,30 @@ class JimClient(Jim):
         self.account_name = account_name
         return self.attend()
 
-    def request_users(self, account_name: str):
+    def request_users(self):
         message = {
             ACTION: GET_USERS,
             TIME: self.timestamp,
-            USER_NAME: account_name,
+            USER_NAME: self.account_name,
         }
         self.send(self.client_sock, message)
-        self.account_name = account_name
         user_list = self.attend()
         if isinstance(user_list, list):
             self.dbase.add_users(user_list)
         else:
             print('Server responded with error %s' % user_list)
 
-    def request_contacts(self, account_name: str):
+    def request_contacts(self):
         message = {
             ACTION: GET_CONTACTS,
             TIME: self.timestamp,
-            USER_NAME: account_name,
+            USER_NAME: self.account_name,
         }
         self.send(self.client_sock, message)
-        self.account_name = account_name
         contact_list = self.attend()
         if isinstance(contact_list, list):
             for contact in contact_list:
                 self.dbase.add_contact(contact)
-        else:
-            print('Server responded with error %s' % contact_list)
 
     def get_contacts(self):
         with self.dbase_locker:
@@ -235,12 +235,13 @@ class JimClient(Jim):
         if self.dbase.is_registered_user(recipient):
             with self.sock_locker:
                 self.send(self.client_sock, message)
-            with self.dbase_locker:
-                self.dbase.save_message(message[USER_NAME],
-                                        message[DESTINATION],
-                                        message[MESSAGE])
-        else:
-            print('User %s not found' % recipient)
+                code = self.attend()
+                if code == OK200:
+                    with self.dbase_locker:
+                        self.dbase.save_message(message[USER_NAME],
+                                                message[DESTINATION],
+                                                message[MESSAGE])
+                return code
 
     def send_to_all(self, text: str):
         message = {
@@ -257,7 +258,7 @@ class JimClient(Jim):
                                     message[MESSAGE])
 
     # @log
-    def process_response(self, data: dict) -> None:
+    def process_response(self, data: dict):
         handlers = {
             OK200: self.ok_handler,
             OK202: self.user_list,
@@ -280,8 +281,8 @@ class JimClient(Jim):
                 sys.exit(1)
 
     def user_not_found(self, data):
-        print('\nUser not found')
-        return self.error_handler(data)
+        self._logger.warning(data[ALERT])
+        return data[CODE]
 
     def user_already_online(self, data):
         self._logger.critical(data[ALERT])
@@ -319,11 +320,11 @@ class JimClient(Jim):
     # @log
     def message_handler(self, data: dict):
         try:
-            print(f'\n{data[USER_NAME]}: {data[MESSAGE]}')
             with self.dbase_locker:
                 self.dbase.save_message(data[USER_NAME],
                                         self.account_name,
                                         data[MESSAGE])
+            self.message_signal.emit(data[USER_NAME])
         except KeyError:
             self._logger.critical(INVALID_JSON)
             self.client_sock.close()
@@ -464,8 +465,9 @@ class JimServer(Jim):
             elif data[DESTINATION] in self.users:
                 self.send_to_client(self.users[data[DESTINATION]], data)
                 self.dbase.count_message(data[USER_NAME], data[DESTINATION])
+                self.response(client, OK200)
             else:
-                self.response(client, ERR404, USER_OFFLINE)
+                self.response(client, ERR404, USER_OFFLINE % data[DESTINATION])
         except (KeyError, TypeError):
             self.response_and_close(client, ERR400, INVALID_JSON)
 

@@ -14,7 +14,7 @@ NO_STATUS = 'No status provided'
 INVALID_ACTION = 'Invalid action'
 WRONG_USER = 'Wrong account name'
 USER_ONLINE = 'User already online'
-USER_OFFLINE = 'You recipient now offline'
+USER_OFFLINE = 'User %s now offline'
 USER_LOGGED_IN = 'User %s logged in'
 USER_LOGGED_OUT = 'User %s logged out'
 

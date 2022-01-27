@@ -106,12 +106,10 @@ class ClientDB:
         return bool(self.session.query(self.Contacts).
                     filter_by(name=contact).count())
 
-    def get_message_history(self, from_user=None, to_user=None):
-        query = self.session.query(self.MessageHistory)
-        if from_user:
-            query = query.filter_by(from_user=from_user)
-        if to_user:
-            query = query.filter_by(to_user=to_user)
+    def get_message_history(self, contact):
+        query = self.session.query(self.MessageHistory).\
+            filter((self.MessageHistory.from_user == contact) |
+                   (self.MessageHistory.to_user == contact))
         return [(history_row.from_user,
                  history_row.to_user,
                  history_row.message,
