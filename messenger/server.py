@@ -1,18 +1,18 @@
+import sys
+import os
 import argparse
 import configparser
 import threading
+from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtCore import QTimer
 from modules.arg_types import ip_address, port
 from loggers.server_log_config import SERVER_LOG
 from modules.messenger import JimServer
 from modules.server_db import ServerDB
 import modules.arg_types
-
-import sys
-import os
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5.QtCore import QTimer
-from modules.gui_server import MainWindow, gui_create_model, HistoryWindow, create_stat_model, ConfigWindow
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from modules.gui_server import MainWindow, gui_create_model,\
+    HistoryWindow, create_stat_model, ConfigWindow
+from modules.user_management import AddUser, DeleteUser
 
 
 def server_run(server):
@@ -119,6 +119,16 @@ def main():
                     'Configuration successfully saved'
                 )
 
+    def add_user():
+        global add_user_window
+        add_user_window = AddUser(server_db, my_server)
+        # add_user_window.show()
+
+    def del_user():
+        global del_user_window
+        del_user_window = DeleteUser(server_db, my_server)
+        # del_user_window.show()
+
     timer = QTimer()
     timer.timeout.connect(list_update)
     timer.start(1000)
@@ -126,6 +136,8 @@ def main():
     main_window.refresh_button.triggered.connect(list_update)
     main_window.show_history_button.triggered.connect(show_statistics)
     main_window.config_btn.triggered.connect(server_config)
+    main_window.add_btn.triggered.connect(add_user)
+    main_window.del_btn.triggered.connect(del_user)
 
     server_app.exec_()
 

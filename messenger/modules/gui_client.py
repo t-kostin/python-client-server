@@ -17,9 +17,9 @@ class UserNameInput(QDialog):
         self.ok_pressed = False
 
         self.setWindowTitle('Login')
-        self.setFixedSize(175, 93)
+        self.setFixedSize(175, 140)
 
-        self.label = QLabel('Input user name:', self)
+        self.label = QLabel('User name', self)
         self.label.move(10, 10)
         self.label.setFixedSize(150, 10)
 
@@ -27,18 +27,27 @@ class UserNameInput(QDialog):
         self.user_name.setFixedSize(154, 20)
         self.user_name.move(10, 30)
 
+        self.label_passwd = QLabel('Password', self)
+        self.label_passwd.move(10, 55)
+        self.label_passwd.setFixedSize(150, 15)
+
+        self.password = QLineEdit(self)
+        self.password.setFixedSize(154, 20)
+        self.password.move(10, 75)
+        self.password.setEchoMode(QLineEdit.Password)
+
         self.btn_ok = QPushButton('Start', self)
-        self.btn_ok.move(10, 60)
+        self.btn_ok.move(10, 110)
         self.btn_ok.clicked.connect(self.click)
 
         self.btn_cancel = QPushButton('Exit', self)
-        self.btn_cancel.move(90, 60)
+        self.btn_cancel.move(90, 110)
         self.btn_cancel.clicked.connect(qApp.exit)
 
         self.show()
 
     def click(self):
-        if self.user_name.text():
+        if self.user_name.text() and self.password.text():
             self.ok_pressed = True
             qApp.exit()
 

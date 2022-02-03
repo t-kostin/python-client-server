@@ -1,16 +1,20 @@
+import hmac
+import os
 import sys
 from socket import socket, AF_INET, SOCK_STREAM, timeout
 import time
 import json
 from select import select
 from PyQt5.QtCore import pyqtSignal, QObject
+from binascii import hexlify, a2b_base64, b2a_base64
+from threading import Lock
+import hashlib
 
 from .constants import *
 from .decorators import log
 from .meta.descriptors import PortDescriptor, IpAddressDescriptor
 from .server_db import ServerDB
 from .client_db import ClientDB
-from threading import Lock
 
 
 class EmptyLogger:
@@ -85,8 +89,8 @@ class JimClient(Jim, QObject):
         self.address = address
         self.port = port
         self.client_sock = socket(AF_INET, SOCK_STREAM)
-        self.client_sock.settimeout(1.1)
         self.account_name = ''
+        self.password = ''
         self.active_session = False
         self.sock_locker = Lock()
         self.dbase_locker = Lock()
@@ -104,8 +108,10 @@ class JimClient(Jim, QObject):
 
     def attend_with_lock(self):
         time.sleep(1)
+        self.client_sock.settimeout(1.1)
         with self.sock_locker:
             self.attend()
+        self.client_sock.settimeout(0)
 
     def attend(self):
         try:
@@ -137,7 +143,7 @@ class JimClient(Jim, QObject):
         self.active_session = False
 
     # @log
-    def send_presence(self, account_name: str, status: str):
+    def send_presence(self, account_name: str, password: str, status: str):
         message = {
             ACTION: SEND_PRESENCE,
             TIME: self.timestamp,
@@ -149,6 +155,7 @@ class JimClient(Jim, QObject):
         }
         self.send(self.client_sock, message)
         self.account_name = account_name
+        self.password = password
         return self.attend()
 
     def request_users(self):
@@ -220,9 +227,9 @@ class JimClient(Jim, QObject):
             else:
                 print('Cannot remove: %s not in contact list' % contact)
 
-    def get_history(self, from_user=None, to_user=None):
+    def get_history(self, contact):
         with self.dbase_locker:
-            return self.dbase.get_message_history(from_user, to_user)
+            return self.dbase.get_message_history(contact)
 
     def send_message(self, recipient: str, text: str):
         message = {
@@ -266,6 +273,7 @@ class JimClient(Jim, QObject):
             ERR401: self.error_handler,
             ERR403: self.user_already_online,
             ERR404: self.user_not_found,
+            ERR511: self.authorization,
             SEND_TO_ALL: self.message_handler,
             SEND_MESSAGE: self.message_handler,
         }
@@ -331,6 +339,32 @@ class JimClient(Jim, QObject):
             self.active_session = False
             sys.exit(1)
 
+    def authorization(self, data: dict):
+        try:
+            code = data[CODE]
+            server_rnd_msg = data[ALERT]
+            self._logger.info(f'Authorization ({code}):')
+
+            passwd_bytes = self.password.encode('utf-8')
+            salt = self.account_name.lower().encode('utf-8')
+            passwd_hash = hashlib.pbkdf2_hmac('sha512', passwd_bytes, salt, 10000)
+            passwd_hash_string = hexlify(passwd_hash)
+
+            client_hash = hmac.new(passwd_hash_string,
+                                   server_rnd_msg.encode('ascii'), 'MD5')
+            digest = client_hash.digest()
+            instant_respond = {
+                CODE: ERR511,
+                ALERT: b2a_base64(digest).decode('ascii'),
+            }
+            self.send(self.client_sock, instant_respond)
+            return self.attend()
+        except (KeyError, ValueError):
+            self._logger.critical(INVALID_JSON)
+            self.client_sock.close()
+            self.active_session = False
+            sys.exit(1)
+
     def user_list(self, data: dict):
         try:
             user_list = data[ALERT]
@@ -361,6 +395,7 @@ class JimServer(Jim):
         self.shutdown_locker = Lock()
         self.clients_number_changed = False
         self.server_running = True
+        self._users_updated = False
 
     def send_to_client(self, client_sock, data):
         try:
@@ -441,7 +476,26 @@ class JimServer(Jim):
                 self.response_and_close(client_sock, ERR403, USER_ONLINE)
             elif len(data[USER][STATUS]) == 0:
                 self.response_and_close(client_sock, ERR400, NO_STATUS)
+            elif acc_name not in [acc[0] for acc in self.dbase.user_list()]:
+                self.response_and_close(client_sock, ERR400, WRONG_USER)
             else:
+                message = hexlify(os.urandom(64))
+                server_hash = hmac.new(self.dbase.get_hash(acc_name), message, 'MD5')
+                server_digest = server_hash.digest()
+                try:
+                    self.response(client_sock, ERR511, message.decode('ascii'))
+                    answer = self.receive(client_sock)
+                except OSError:
+                    client_sock.close()
+                    return
+                try:
+                    user_digest = a2b_base64(answer[ALERT])
+                    if answer[CODE] != 511 \
+                            or not hmac.compare_digest(server_digest, user_digest):
+                        raise TypeError
+                except (KeyError, TypeError):
+                    self.response_and_close(client_sock, ERR400, WRONG_USER)
+                    return
                 self.users.update({acc_name: client_sock})
                 acc_ip, acc_port = client_sock.getpeername()
                 self.dbase.login(acc_name, acc_ip, acc_port)
@@ -532,6 +586,17 @@ class JimServer(Jim):
             ALERT: message,
         }
         self.send_to_client(client, response_data)
+
+    def users_updated(self, action_type, user):
+        alert = {
+            ACTION: action_type,
+            USER_NAME: user
+        }
+        for sock in self.users.values():
+            try:
+                self.response(sock, OK205, alert)
+            except OSError:
+                self.close_session(sock)
 
     def shutdown(self):
         with self.shutdown_locker:

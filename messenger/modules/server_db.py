@@ -8,9 +8,10 @@ from sqlalchemy.orm import mapper, sessionmaker
 class ServerDB:
     class Users:
 
-        def __init__(self, user_name, last_login):
+        def __init__(self, user_name, last_login, pwd_hash):
             self.id = None
             self.name = user_name
+            self.pwd_hash = pwd_hash
             self.last_login = last_login
 
     class ActiveUsers:
@@ -60,6 +61,7 @@ class ServerDB:
             self.metadata,
             Column('id', Integer, primary_key=True),
             Column('name', String(64), unique=True),
+            Column('pwd_hash', String(256)),
             Column('last_login', DateTime),
         )
         active_users_table = Table(
@@ -136,6 +138,37 @@ class ServerDB:
 
     def user_list(self):
         return self.session.query(self.Users.name, self.Users.last_login).all()
+
+    def is_user_registered(self, user_name) -> bool:
+        return bool(
+            self.session.query(self.Users).filter(self.Users.name == user_name).first()
+        )
+
+    def add_user(self, user_name, pwd_hash) -> bool:
+        user_row = self.session.query(self.Users).\
+            filter_by(name=user_name).first()
+        if not user_row:
+            new_user_row = self.Users(user_name, None, pwd_hash)
+            self.session.add(new_user_row)
+            self.session.commit()
+            return True
+        else:
+            return False
+
+    def remove_user(self, user_name):
+        user_row = self.session.query(self.Users).filter_by(name=user_name).\
+            first()
+        self.session.query(self.ActiveUsers).filter_by(user_id=user_row.id).\
+            delete()
+        self.session.query(self.LoginHistory).filter_by(user_id=user_row.id).\
+            delete()
+        self.session.query(self.Contacts).filter_by(user_id=user_row.id).\
+            delete()
+        self.session.query(self.Contacts).filter_by(contact_id=user_row.id).\
+            delete()
+        self.session.query(self.UsersHistory).filter_by(user_id=user_row.id).delete()
+        self.session.query(self.Users).filter_by(name=user_name).delete()
+        self.session.commit()
 
     def active_user_list(self):
         return self.session.query(
@@ -232,3 +265,14 @@ class ServerDB:
             self.UsersHistory.sent,
             self.UsersHistory.received,
         ).join(self.Users).all()
+
+    def get_hash(self, user):
+        user_row = self.session.query(self.Users).filter_by(name=user).first()
+        return user_row.pwd_hash
+
+    def del_user(self, user):
+        user_row = self.session.query(self.Users). \
+            filter_by(user=user).first()
+        if user_row:
+            user_row.delete()
+            self.session.commit()

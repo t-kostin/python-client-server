@@ -2,11 +2,13 @@ BUFFER_SIZE = 4096
 
 OK200 = 200
 OK202 = 202
+OK205 = 205
 ERR400 = 400
 ERR401 = 401
 ERR403 = 403
 ERR404 = 404
 ERR504 = 504
+ERR511 = 511
 
 INVALID_JSON = 'Invalid JSON format'
 BAD_TIMESTAMP = 'Bad timestamp'
@@ -26,6 +28,8 @@ GET_CONTACTS = 'contacts'
 ADD_CONTACT = 'add_contact'
 REMOVE_CONTACT = 'del_contact'
 GET_USERS = 'get_users'
+ADD_USR = 'add_user'
+DEL_USR = 'remove_user'
 
 
 ACTION = 'action'

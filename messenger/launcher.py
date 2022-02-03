@@ -1,5 +1,4 @@
 from subprocess import Popen, CREATE_NEW_CONSOLE
-USER_LIST = ['John', 'Fox', 'Max']
 
 
 def main():
@@ -7,12 +6,12 @@ def main():
 
     clients = []
     while True:
-        answer = input(f'Start {len(USER_LIST)} clients (s), Close clients (c),'
+        answer = input(f'Start 3 clients (s), Close clients (c),'
                        f' Close clients & exit (x): ')
 
         if answer == 's' and clients == []:
-            for user in USER_LIST:
-                client = Popen(f'python client.py {user}',
+            for user in range(3):
+                client = Popen(f'python client.py',
                                creationflags=CREATE_NEW_CONSOLE)
                 clients.append(client)
         elif answer == 'c' or answer == 'x':

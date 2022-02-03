@@ -85,6 +85,17 @@ class ClientDB:
             self.session.add(user_row)
         self.session.commit()
 
+    def add_user(self, user):
+        if not self.session.query(self.Users).filter_by(name=user).count():
+            user_row = self.Contacts(user)
+            self.session.add(user_row)
+            self.session.commit()
+
+    def remove_user(self, user):
+        self.session.query(self.Users).filter_by(name=user).delete()
+        self.session.query(self.Contacts).filter_by(name=user).delete()
+        self.session.commit()
+
     def save_message(self, from_user, to_user, message):
         message_row = self.MessageHistory(from_user, to_user, message)
         self.session.add(message_row)
